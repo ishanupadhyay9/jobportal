@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
@@ -19,7 +19,7 @@ export default function Navbar() {
           Login
         </Link>
         <Link
-          to="/signup"
+          to="/user-signup"
           className="px-4 py-2 rounded-md bg-primary text-white hover:bg-primary-focus transition"
         >
           Signup

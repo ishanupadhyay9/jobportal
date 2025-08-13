@@ -1,20 +1,36 @@
-import React from 'react'
+import React from 'react';
 
-const Jobcard = () => {
+const Jobcard = ({
+  companyName = "Microsoft", // Default values
+  companyLogo = "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+  jobTitle = "Software Engineer",
+  description = "Apply here to be a Software engineer at Microsoft",
+  buttonText = "See Status"
+}) => {
   return (
-    <div>
-      <div class="card px-3 bg-base-100 card-xs shadow-sm m-3" data-theme={"light"}>
-  <div class="card-body">
-    <h2 class="card-title text-2xl h-9">Microsoft</h2>
-      <h2 class="card-title text-m text-gray-600">Software Engineer</h2>
-    <p className=' text-[15px]'>Apply here to be a Software engineer at Microsoft</p>
-    <div class="justify-left card-actions mb-3">
-      <button class="btn btn-info text-white">See Status</button>
+    <div
+      className="card px-3 bg-base-100 card-xs shadow-sm m-3 min-w-[250px]"
+      data-theme="light"
+    >
+      <div className="card-body">
+        <h2 className="card-title text-2xl h-9 flex items-center space-x-2">
+          {companyLogo && (
+            <img
+              src={companyLogo}
+              alt={`${companyName} Logo`}
+              className="w-6 h-6 object-contain"
+            />
+          )}
+          <span>{companyName}</span>
+        </h2>
+        <h2 className="card-title text-m text-gray-600">{jobTitle}</h2>
+        <p className="text-[15px]">{description}</p>
+        <div className="justify-left card-actions mb-3">
+          <button className={`btn btn-info text-white  ${buttonText==="Results"?" bg-green-300 border-0":""}`}>{buttonText}</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-    </div>
-  )
-}
+  );
+};
 
-export default Jobcard
+export default Jobcard;

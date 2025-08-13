@@ -3,6 +3,8 @@ import img from "../images/Company.gif";
 import { Link } from 'react-router';
 
 const EmployerSignup = () => {
+
+  
   return (
     <div>
       <div>
