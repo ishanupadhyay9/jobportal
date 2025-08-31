@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import JobCard from './JobCard';
-import { getPopularJobs } from '../../services/apicalls/jobApi';
+import { getRecentJobs } from '../../services/apicalls/jobApi';
 import { useSelector } from 'react-redux';
-const PopularJobsSection = () => {
+const RecentJobs = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const cardsPerView = 4;
 
@@ -11,7 +11,7 @@ const PopularJobsSection = () => {
   const token = useSelector((state)=>state.auth.token);
   useEffect(()=>{
     async function getpj(){
-      const data = await getPopularJobs(token);
+      const data = await getRecentJobs(token);
       console.log(data);
       setPopularJobs(data.data);
     }
@@ -33,9 +33,9 @@ const PopularJobsSection = () => {
   const visibleJobs = popularJobs.slice(currentIndex, currentIndex + cardsPerView);
 
   return (
-    <section className="py-16 px-6 relative" style={{ background: '#f1f3f5' }}>
+    <section className=" mt-20 py-16 px-6 relative" style={{ background: '#f1f3f5' }}>
       <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">
-        Popular Jobs
+        Recent Jobs
       </h2>
       <div className="overflow-hidden">
         <div 
@@ -61,4 +61,4 @@ const PopularJobsSection = () => {
   );
 };
 
-export default PopularJobsSection;
+export default RecentJobs;

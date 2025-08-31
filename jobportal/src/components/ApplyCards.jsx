@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Jobcard = ({
+const ApplyCards = ({
   jobId, // Added jobId prop
   companyName = "Microsoft", // Default values
   companyLogo = "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
@@ -13,8 +13,8 @@ const Jobcard = ({
 
   const handleJobClick = () => {
     if (jobId) {
-      // Navigate to EmployerPost component with jobId in params
-      navigate(`/employer/job/${jobId}`);
+      // Navigate to UserJobPost component with jobId in params
+      navigate(`/user-job-post/${jobId}`);
     } else {
       console.log("No jobId provided");
     }
@@ -51,4 +51,4 @@ const Jobcard = ({
   );
 };
 
-export default Jobcard;
+export default ApplyCards;

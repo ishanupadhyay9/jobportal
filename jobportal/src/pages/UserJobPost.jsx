@@ -1,20 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import img from "../images/tech.gif";
+import { useSelector } from 'react-redux';
+import { getJobDetails, applyToJob } from '../services/apicalls/jobApi'; // Added applyToJob import
+import LoadingScreen from '../components/LoadingScreen';
+import toast from 'react-hot-toast'; // Added toast import
 
 const UserJobPost = () => {
-  const companyLogo = "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg";
-  const companyName = "Microsoft";
-  const employerName = "John Doe";
-  const jobTitle = "Software Engineer";
-  const jobDescription = `...`; // (omitted for brevity)
-  const min10thPercentage = "85%";
-  const min12thPercentage = "80%";
-  const lastDateToApply = "2025-09-15";
-  const totalApplicants = 45;
+  const { jobId } = useParams();
+  const [jobData, setJobData] = useState(null);
   const [applied, setApplied] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [applying, setApplying] = useState(false); // Added applying state
 
-  const jobImage = img;
+  const reduxToken = useSelector((state) => state.auth.token);
+  const localStorageToken = localStorage.getItem('token');
+  const token = reduxToken || localStorageToken || null;
+
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      if (!jobId || !token) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      try {
+        const response = await getJobDetails(jobId, token);
+        if (response.success) {
+          setJobData(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching job details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobDetails();
+  }, [jobId, token]);
 
   const calculateDaysRemaining = (lastDate) => {
     const now = new Date();
@@ -22,12 +45,73 @@ const UserJobPost = () => {
     const diff = deadline.getTime() - now.getTime();
     return Math.ceil(diff / (1000 * 3600 * 24));
   };
-  const daysRemaining = calculateDaysRemaining(lastDateToApply);
 
-  const handleApply = () => {
-    setApplied(true);
-    console.log('Applied for job');
+  // Updated handleApply function to call applyToJob API
+  const handleApply = async () => {
+    if (!jobData?.active || daysRemaining <= 0) {
+      toast.error("This job is no longer active");
+      return;
+    }
+
+    setApplying(true);
+    try {
+      const response = await applyToJob(jobId, token);
+      
+      if (response.success) {
+        setApplied(true);
+        toast.success("Applied successfully!");
+        
+        // Update job data to reflect new application count
+        setJobData(prev => ({
+          ...prev,
+          cur_applications: prev.cur_applications + 1
+        }));
+      } else {
+        toast.error(response.message || "Failed to apply for job");
+      }
+    } catch (error) {
+      console.error("Error applying to job:", error);
+      toast.error("Error applying to job");
+    } finally {
+      setApplying(false);
+    }
   };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (!jobData) {
+    return (
+      <div className="w-full overflow-x-hidden min-h-screen">
+        <Navbar />
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500">Job not found or failed to load.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const {
+    org: companyName,
+    org_avatar: companyLogo,
+    employer_firstname,
+    employer_lastname,
+    title: jobTitle,
+    body: jobDescription,
+    min_10th_percentage,
+    min_12th_percentage,
+    terminate_at: lastDateToApply,
+    cur_applications: totalApplicants,
+    active: isJobActive, // Added to check if job is active
+  } = jobData;
+
+  const employerName = `${employer_firstname || ''} ${employer_lastname || ''}`.trim();
+  const daysRemaining = calculateDaysRemaining(lastDateToApply);
+  const jobImage = img;
+
+  // Check if job is active and within deadline
+  const canApply = isJobActive && daysRemaining > 0 && !applied;
 
   return (
     <div className="w-full overflow-x-hidden min-h-screen">
@@ -35,11 +119,13 @@ const UserJobPost = () => {
 
       <div className="px-4 pt-3 max-w-[1080px] mx-auto">
         <div className="p-4 bg-white rounded-xl shadow-lg flex flex-col items-center space-y-4 mt-3">
-          <img
-            src={companyLogo}
-            alt={`${companyName} Logo`}
-            className="w-40 h-40 object-contain rounded-lg"
-          />
+          {companyLogo && (
+            <img
+              src={companyLogo}
+              alt={`${companyName} Logo`}
+              className="w-40 h-40 object-contain rounded-lg"
+            />
+          )}
           <h1 className="text-5xl font-extrabold text-gray-900">{companyName}</h1>
           <p className="text-xl text-gray-600">Employer: {employerName}</p>
         </div>
@@ -63,7 +149,7 @@ const UserJobPost = () => {
                     Min 10th Standard Percentage Required
                   </label>
                   <span className="px-4 py-2 rounded-lg text-gray-900 block">
-                    {min10thPercentage}
+                    {min_10th_percentage}%
                   </span>
                 </div>
                 <div>
@@ -71,7 +157,7 @@ const UserJobPost = () => {
                     Min 12th Standard Percentage Required
                   </label>
                   <span className="px-4 py-2 rounded-lg text-gray-900 block">
-                    {min12thPercentage}
+                    {min_12th_percentage}%
                   </span>
                 </div>
               </div>
@@ -96,10 +182,13 @@ const UserJobPost = () => {
                     <div className="text-2xl font-bold text-blue-600">{totalApplicants}</div>
                     <div className="text-sm text-gray-600 mt-1">Total Applicants</div>
                   </div>
+
                   <div className="text-center bg-orange-50 rounded-lg p-4">
                     <div className="text-sm font-semibold text-orange-600">
                       {new Date(lastDateToApply).toLocaleDateString('en-US', {
-                        month: 'short', day: 'numeric', year: 'numeric'
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric'
                       })}
                     </div>
                     <div className="text-xs text-gray-600 mt-1">
@@ -111,28 +200,30 @@ const UserJobPost = () => {
 
                 <div className="flex justify-center mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    daysRemaining > 7
+                    isJobActive && daysRemaining > 7
                       ? 'bg-green-100 text-green-800'
-                      : daysRemaining > 0
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
+                      : isJobActive && daysRemaining > 0
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
                   }`}>
-                    {daysRemaining > 0 ? 'Active' : 'Closed'}
+                    {isJobActive ? (daysRemaining > 0 ? 'Active' : 'Closed') : 'Inactive'}
                   </span>
                 </div>
 
                 <button
                   onClick={handleApply}
-                  disabled={applied || daysRemaining <= 0}
+                  disabled={!canApply || applying}
                   className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none ${
                     applied
+                      ? 'bg-green-500 text-white cursor-not-allowed'
+                      : !canApply
                       ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : applying
+                      ? 'bg-blue-400 text-white cursor-wait'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
-                  } ${
-                    daysRemaining <= 0 && 'opacity-50 cursor-not-allowed'
                   }`}
                 >
-                  {applied ? '✓ Applied' : 'Apply Now'}
+                  {applying ? 'Applying...' : applied ? '✓ Applied' : 'Apply Now'}
                 </button>
               </div>
             </div>

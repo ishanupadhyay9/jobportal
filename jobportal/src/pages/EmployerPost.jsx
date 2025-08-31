@@ -1,59 +1,58 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { FaArrowLeft } from 'react-icons/fa'
 import Navbar from '../components/Navbar'
 import img from "../images/tech.gif"
+import { getJobDetails } from '../services/apicalls/jobApi'
+import LoadingScreen from '../components/LoadingScreen'
 
 const EmployerPost = () => {
-  const companyLogo = "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg";
-  const companyName = "Microsoft";
-  const employerName = "John Doe";
-  const jobTitle = "Software Engineer";
-  const jobDescription = `
-We are seeking a passionate and talented Software Engineer to join our growing team. As part of our core engineering group, you will work on cutting-edge projects that impact millions of users worldwide. This position provides the opportunity to contribute to highly scalable and robust systems, develop efficient code, and collaborate within a cross-functional and dynamic environment.
-
-Responsibilities
-
-As a Software Engineer, you will:
-- Design, develop, and maintain web applications, APIs, and services that are highly available and scalable.
-- Collaborate closely with product managers, designers, and fellow engineers to deliver features end-to-end, from concept to production.
-- Participate in code reviews, mentor junior developers, and help establish best practices in code quality, testing, and documentation.
-- Troubleshoot performance and reliability issues, leveraging strong analytic and problem-solving skills.
-- Stay up-to-date with the latest technologies, and actively participate in technical discussions to help guide architectural and design decisions.
-- Take ownership of assigned modules and products, ensuring timely delivery of high-quality solutions.
-
-What We're Looking For
-
-The ideal candidate will have:
-- A Bachelor's or Master's degree in Computer Science, Engineering, or a related field, or equivalent practical experience.
-- 2+ years of professional software development experience, preferably in a product-based environment.
-- Proficiency in at least one modern programming language such as JavaScript/TypeScript, Python, Java, or Go.
-- Solid understanding of web technologies, RESTful APIs, databases (SQL/NoSQL), and cloud platforms (AWS, Azure, or GCP).
-- Experience with agile methodologies, source control (Git), and continuous integration/deployment pipelines.
-- Strong communication skills and the ability to articulate complex technical concepts to technical and non-technical audiences.
-
-What Sets You Apart
-
-- A passion for learning new technologies and improving existing skills.
-- A collaborative mindset, with empathy for both colleagues and end-users.
-- An interest in building systems that have meaningful, real-world impact.
-- Experience with microservices, containerization (Docker, Kubernetes), or frontend frameworks (React, Angular, Vue) is a plus.
-- A proactive approach to identifying opportunities for optimization, automation, and innovation.
-
-Why Join Us?
-
-By joining our team, you will work in a friendly, inclusive, and innovative environment where your input is valued and your growth is supported. We believe in maintaining a healthy work-life balance and encourage personal and professional development. Our company offers competitive compensation, comprehensive benefits, flexible work arrangements, and the chance to work on challenging and rewarding projects with talented professionals.
-
-
-If you're excited about building exceptional products and eager to take on new challenges in a supportive environment, we would love to hear from you!
-`;
-
-  const min10thPercentage = "85%";
-  const min12thPercentage = "80%";
-  const lastDateToApply = "2025-09-15"; // Added missing variable
-  const totalApplicants = 45; // Simplified - no state needed if not updating
+  const { jobId } = useParams(); // Get jobId from URL params
+  const navigate = useNavigate(); // Add navigate hook
+  const [jobData, setJobData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [shortlisted, setShortlisted] = useState(false);
 
-  // Sample data - you can pass these as props
-  const jobImage = img;
+  // Get token from Redux auth slice
+  const reduxToken = useSelector((state) => state.auth.token);
+  const localStorageToken = localStorage.getItem('token');
+  const token = reduxToken || localStorageToken || null;
+
+  // Back button handler
+  const handleGoBack = () => {
+    navigate(-1); // Go back to previous page
+  };
+
+  // Fetch job details when component mounts
+  useEffect(() => {
+    const fetchJobDetails = async () => {
+      if (!jobId || !token) {
+        console.log("Missing jobId or token");
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        console.log("Fetching job details for jobId:", jobId);
+        const response = await getJobDetails(jobId, token);
+        
+        if (response.success) {
+          setJobData(response.data);
+          console.log("Job details fetched:", response.data);
+        } else {
+          console.error("Failed to fetch job details:", response);
+        }
+      } catch (error) {
+        console.error('Error fetching job details:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobDetails();
+  }, [jobId, token]);
 
   const handleShortlist = () => {
     setShortlisted(!shortlisted);
@@ -69,24 +68,65 @@ If you're excited about building exceptional products and eager to take on new c
     return daysRemaining;
   };
 
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  if (!jobData) {
+    return (
+      <div className='w-full overflow-x-hidden min-h-screen'>
+        <Navbar />
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500">Job not found or failed to load.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Extract data from fetched job details
+  const companyLogo = jobData.org_avatar;
+  const companyName = jobData.org;
+  const employerName = `${jobData.employer_firstname || ''} ${jobData.employer_lastname || ''}`.trim() || 'Not specified';
+  const jobTitle = jobData.title;
+  const jobDescription = jobData.body;
+  const min10thPercentage = `${jobData.min_10th_percentage}%`;
+  const min12thPercentage = `${jobData.min_12th_percentage}%`;
+  const lastDateToApply = jobData.terminate_at;
+  const totalApplicants = jobData.cur_applications;
   const daysRemaining = calculateDaysRemaining(lastDateToApply);
+  const jobImage = img; // Keep using the default image
 
   return (
     <div className='w-full overflow-x-hidden min-h-screen'>
       <Navbar/>
       <div className="px-4 pt-3">
-
-        <div className="p-4 bg-white rounded-xl shadow-lg flex flex-col items-center space-y-4 mt-3 w-full max-w-[1080px] mx-auto">
-          <img
-            src={companyLogo}
-            alt={`${companyName} Logo`}
-            className="w-40 h-40 object-contain rounded-lg"
-          />
-          <h1 className="text-5xl font-extrabold text-gray-900">{companyName}</h1>
-          <p className="text-xl text-gray-600">Employer: {employerName}</p>
+        {/* Stylish Back Button */}
+        <div className="max-w-[1200px] mx-auto mb-4">
+          <button
+            onClick={handleGoBack}
+            className="flex  items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300  shadow-sm  hover:shadow-md group rounded-full hover:rounded-lg transition duration-1000  ease-in-out hover:text-white"
+          >
+            <FaArrowLeft className="text-gray-600 group-hover:text-blue-600 transition-colors duration-200" />
+            
+          </button>
         </div>
 
-        <div className='flex flex-col lg:flex-row mt-8 justify-between px-15  max-w-[1200px] mx-auto'>
+        <div className="p-4 bg-white rounded-xl shadow-lg flex flex-col items-center space-y-4 mt-3 w-full max-w-[1080px] mx-auto">
+          {companyLogo && (
+            <img
+              src={companyLogo}
+              alt={`${companyName} Logo`}
+              className="w-40 h-40 object-contain rounded-lg"
+            />
+          )}
+          <h1 className="text-5xl font-extrabold text-gray-900">{companyName}</h1>
+          <p className="text-xl text-gray-600">Employer: {employerName}</p>
+          <p className="text-sm text-gray-500">
+            Location: {jobData.employer_city}, {jobData.employer_state}, {jobData.employer_country}
+          </p>
+        </div>
+
+        <div className='flex flex-col lg:flex-row mt-8 justify-between px-15 max-w-[1200px] mx-auto'>
           <div className="flex-1 max-w-2xl bg-white rounded-xl shadow-lg p-6 border border-gray-300">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">{jobTitle}</h2>
             <p className="text-gray-700 text-base leading-relaxed whitespace-pre-line">{jobDescription}</p>
@@ -119,8 +159,15 @@ If you're excited about building exceptional products and eager to take on new c
                   </span>
                 </div>
 
-                {/* Last Date */}
-                {/* People Enrolled */}
+                {/* Max Applications */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Maximum Applications Allowed
+                  </label>
+                  <span className="w-full px-4 py-2 rounded-lg text-gray-900">
+                    {jobData.max_applications}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -171,28 +218,32 @@ If you're excited about building exceptional products and eager to take on new c
                 {/* Status Indicator */}
                 <div className="flex items-center justify-center mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    daysRemaining > 7 
-                      ? 'bg-green-100 text-green-800' 
-                      : daysRemaining > 0 
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
+                    jobData.active
+                      ? daysRemaining > 7 
+                        ? 'bg-green-100 text-green-800' 
+                        : daysRemaining > 0 
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
+                      : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {daysRemaining > 0 ? 'Active' : 'Closed'}
+                    {jobData.active ? (daysRemaining > 0 ? 'Active' : 'Closed') : 'Inactive'}
                   </span>
                 </div>
 
                 {/* Shortlist Button */}
                 <button
                   onClick={handleShortlist}
+                  disabled={!jobData.active || daysRemaining <= 0}
                   className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 ${
-                    shortlisted
+                    !jobData.active || daysRemaining <= 0
+                      ? 'bg-gray-400 text-white cursor-not-allowed'
+                      : shortlisted
                       ? 'bg-green-600 text-white hover:bg-green-700'
                       : 'bg-blue-600 text-white hover:bg-blue-700'
                   } focus:ring-4 focus:ring-blue-300 focus:outline-none`}
                 >
                   {shortlisted ? '✓ Shortlisted' : 'Shortlist Candidates'}
                 </button>
-
               </div>
             </div>
           </div>

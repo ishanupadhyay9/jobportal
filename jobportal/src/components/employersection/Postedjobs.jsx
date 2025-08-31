@@ -1,170 +1,213 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Jobcard from '../Jobcard';
-import { useState } from 'react';
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-
+import { useSelector } from 'react-redux';
+import { getActiveEmployerJobs, getInactiveEmployerJobs } from '../../services/apicalls/jobApi';
+import LoadingScreen from '../LoadingScreen';
 
 const Postedjobs = () => {
-
-    const jobData = [
-    {
-      companyName: "Microsoft",
-      companyLogo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
-      jobTitle: "Software Engineer",
-      description: "Join Microsoft as a software engineer."
-    },
-    {
-      companyName: "Google",
-      companyLogo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg",
-      jobTitle: "Frontend Developer",
-      description: "Work on Google's front-end applications."
-    },
-    {
-      companyName: "Apple",
-      companyLogo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
-      jobTitle: "iOS Developer",
-      description: "Join Apple's mobile development team."
-    },
-    {
-      companyName: "Amazon",
-      companyLogo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg",
-      jobTitle: "Cloud Architect",
-      description: "Work with AWS services at Amazon."
-    },
-    {
-      companyName: "Netflix",
-      companyLogo: "https://upload.wikimedia.org/wikipedia/commons/7/75/Netflix_icon.svg",
-      jobTitle: "Backend Engineer",
-      description: "Join Netflix backend infrastructure team."
-    },
-    {
-      companyName: "Tesla",
-      companyLogo: "https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg",
-      jobTitle: "Electrical Engineer",
-      description: "Work on electric vehicle systems at Tesla."
-    },
-    {
-      // Example with no props → defaults will be used
-    }
-  ];
-
-  const [startIndex, setStartIndex] = useState(0);
+  const [activeJobs, setActiveJobs] = useState([]);
+  const [inactiveJobs, setInactiveJobs] = useState([]);
+  const [activeStartIndex, setActiveStartIndex] = useState(0);
+  const [inactiveStartIndex, setInactiveStartIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const role = useSelector((state)=>state.auth.role);
   const visibleCount = 6;
 
-  const handleNext = () => {
-    setStartIndex((prev) =>
-      Math.min(prev + visibleCount, jobData.length - visibleCount)
+  // Get token and userId (as employerId) from Redux auth slice
+  const reduxToken = useSelector((state) => state.auth.token);
+  const localStorageToken = localStorage.getItem('token');
+  const token = reduxToken || localStorageToken || null;
+  
+  // Get userId as employerId from auth slice
+  const employerId = useSelector((state) => state.auth.userData.employer_id);
+  console.log(employerId, "is the userId")
+  
+  // Add console logs for debugging
+
+  // Fetch jobs data
+  useEffect(() => {
+    const fetchJobs = async () => {
+      
+      if (!token || !employerId) {
+        console.log("Missing token or employerId");
+        return;
+      }
+      
+      setLoading(true);
+      try {
+        console.log("Calling getActiveEmployerJobs...");
+        // Fetch active jobs
+        const activeResponse = await getActiveEmployerJobs(employerId, token);
+        console.log("Active jobs response:", activeResponse);
+        if (activeResponse.success) {
+          setActiveJobs(activeResponse.data);
+          console.log("Active jobs set:", activeResponse.data);
+        } else {
+          console.error("Failed to fetch active jobs:", activeResponse);
+        }
+
+        console.log("Calling getInactiveEmployerJobs...");
+        // Fetch inactive jobs
+        const inactiveResponse = await getInactiveEmployerJobs(employerId, token);
+        console.log("Inactive jobs response:", inactiveResponse);
+        if (inactiveResponse.success) {
+          setInactiveJobs(inactiveResponse.data);
+          console.log("Inactive jobs set:", inactiveResponse.data);
+        } else {
+          console.error("Failed to fetch inactive jobs:", inactiveResponse);
+        }
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [token, employerId]);
+
+  // Pagination handlers for active jobs
+  const handleActiveNext = () => {
+    setActiveStartIndex((prev) =>
+      Math.min(prev + visibleCount, activeJobs.length - visibleCount)
     );
   };
 
-  const handlePrev = () => {
-    setStartIndex((prev) => Math.max(prev - visibleCount, 0));
+  const handleActivePrev = () => {
+    setActiveStartIndex((prev) => Math.max(prev - visibleCount, 0));
   };
 
+  // Pagination handlers for inactive jobs
+  const handleInactiveNext = () => {
+    setInactiveStartIndex((prev) =>
+      Math.min(prev + visibleCount, inactiveJobs.length - visibleCount)
+    );
+  };
 
+  const handleInactivePrev = () => {
+    setInactiveStartIndex((prev) => Math.max(prev - visibleCount, 0));
+  };
 
-const companyName = "Microsoft";
-  const companyLogoUrl = "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg";
+  // Get company info from first job (if available) - removed placeholder
+  const companyName = activeJobs[0]?.org || inactiveJobs[0]?.org || "Your Company";
+  const companyLogoUrl = activeJobs[0]?.org_avatar || inactiveJobs[0]?.org_avatar;
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className='w-full h-full relative'>
-        <div className="max-w-4xl  left-3 mx-auto p-6 bg-white w-[90%] mt-3 h-[159px] rounded-xl">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900">All Jobs Posting</h1>
-      
-      <div className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow">
-        <img
-          src={companyLogoUrl}
-          alt={`${companyName} Logo`}
-          className="w-10 h-10 object-contain"
-        />
-        <span className="text-xl font-semibold text-gray-800">{companyName}</span>
-      </div>
-    </div>
-
-
-     <div className=" m-6 p-6 rounded-xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Active Job Postings</h1>
-
-      <div className="flex items-center">
-        {/* Left Button */}
-        <button
-          onClick={handlePrev}
-          disabled={startIndex === 0}
-          className="px-4 py-4 bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
-        >
-          <FaArrowLeft />
-
-        </button>
-
-        {/* Cards Grid */}
-        <div className="grid grid-cols-3 grid-rows-2 gap-4 flex-1">
-          {jobData
-            .slice(startIndex, startIndex + visibleCount)
-            .map((job, index) => (
-              <Jobcard
-                key={index + startIndex}
-                companyName={job.companyName}
-                companyLogo={job.companyLogo}
-                jobTitle={job.jobTitle}
-                description={job.description}
-                buttonText={job.buttonText}
-              />
-            ))}
+      <div className="max-w-4xl left-3 mx-auto p-6 bg-white w-[90%] mt-3 h-[159px] rounded-xl">
+        <h1 className="text-3xl font-bold mb-6 text-gray-900">All Jobs Posting</h1>
+        
+        <div className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow">
+          {companyLogoUrl && (
+            <img
+              src={companyLogoUrl}
+              alt={`${companyName} Logo`}
+              className="w-10 h-10 object-contain"
+            />
+          )}
+          <span className="text-xl font-semibold text-gray-800">{companyName}</span>
         </div>
-
-        {/* Right Button */}
-        <button
-          onClick={handleNext}
-          disabled={startIndex + visibleCount >= jobData.length}
-          className="px-4 py-4  bg-blue-500   rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
-        >
-          <FaArrowRight/>
-        </button>
       </div>
-    </div>
 
-      <div className=" m-6 p-6 rounded-xl">
-      <h1 className="text-3xl font-bold mb-6 text-center">Completed Job Postings</h1>
+      {/* Active Job Postings */}
+      <div className="m-6 p-6 rounded-xl">
+        <h1 className="text-3xl font-bold mb-6 text-center">Active Job Postings ({activeJobs.length})</h1>
 
-      <div className="flex items-center">
-        {/* Left Button */}
-        <button
-          onClick={handlePrev}
-          disabled={startIndex === 0}
-          className="px-4 py-4 bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
-        >
-          <FaArrowLeft />
+        {activeJobs.length === 0 ? (
+          <p className="text-center text-gray-500">No active jobs found.</p>
+        ) : (
+          <div className="flex items-center">
+            {/* Left Button */}
+            <button
+              onClick={handleActivePrev}
+              disabled={activeStartIndex === 0}
+              className="px-4 py-4 bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+            >
+              <FaArrowLeft />
+            </button>
 
-        </button>
+            {/* Cards Grid */}
+            <div className="grid grid-cols-3 grid-rows-2 gap-4 flex-1">
+              {activeJobs
+                .slice(activeStartIndex, activeStartIndex + visibleCount)
+                .map((job, index) => (
+                  <Jobcard
+                    key={job.job_id || index + activeStartIndex}
+                    jobId={job.job_id}
+                    companyName={job.org}
+                    companyLogo={job.org_avatar}
+                    jobTitle={job.title}
+                    description={job.body}
+                    lastDate={job.terminate_at}
+                    buttonText="View Details"
+                  />
+                ))}
+            </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-3 grid-rows-2 gap-4 flex-1">
-          {jobData
-            .slice(startIndex, startIndex + visibleCount)
-            .map((job, index) => (
-              <Jobcard
-                key={index + startIndex}
-                companyName={job.companyName}
-                companyLogo={job.companyLogo}
-                jobTitle={job.jobTitle}
-                description={job.description}
-                buttonText={"Results"}
-              />
-            ))}
-        </div>
-
-        {/* Right Button */}
-        <button
-          onClick={handleNext}
-          disabled={startIndex + visibleCount >= jobData.length}
-          className="px-4 py-4  bg-blue-500   rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
-        >
-          <FaArrowRight/>
-        </button>
+            {/* Right Button */}
+            <button
+              onClick={handleActiveNext}
+              disabled={activeStartIndex + visibleCount >= activeJobs.length}
+              className="px-4 py-4 bg-blue-500 rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+            >
+              <FaArrowRight/>
+            </button>
+          </div>
+        )}
       </div>
-    </div>
+
+      {/* Completed Job Postings */}
+      <div className="m-6 p-6 rounded-xl">
+        <h1 className="text-3xl font-bold mb-6 text-center">Completed Job Postings ({inactiveJobs.length})</h1>
+
+        {inactiveJobs.length === 0 ? (
+          <p className="text-center text-gray-500">No completed jobs found.</p>
+        ) : (
+          <div className="flex items-center">
+            {/* Left Button */}
+            <button
+              onClick={handleInactivePrev}
+              disabled={inactiveStartIndex === 0}
+              className="px-4 py-4 bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+            >
+              <FaArrowLeft />
+            </button>
+
+            {/* Cards Grid */}
+            <div className="grid grid-cols-3 grid-rows-2 gap-4 flex-1">
+              {inactiveJobs
+                .slice(inactiveStartIndex, inactiveStartIndex + visibleCount)
+                .map((job, index) => (
+                  <Jobcard
+                    key={job.job_id || index + inactiveStartIndex}
+                    companyName={job.org}
+                    companyLogo={job.org_avatar}
+                    jobTitle={job.title}
+                    description={job.body}
+                    lastDate={job.terminate_at}
+                    buttonText="Results"
+                  />
+                ))}
+            </div>
+
+            {/* Right Button */}
+            <button
+              onClick={handleInactiveNext}
+              disabled={inactiveStartIndex + visibleCount >= inactiveJobs.length}
+              className="px-4 py-4 bg-blue-500 rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+            >
+              <FaArrowRight/>
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-export default Postedjobs
+export default Postedjobs;

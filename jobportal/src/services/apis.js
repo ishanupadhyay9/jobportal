@@ -18,5 +18,10 @@ export const profileEndpoints = {
 
 // STUDENTS ENDPOINTS
 export const jobEndPoints = {
-  CREATE_JOB_API: BASE_URL + "/jobs/createjob"
+  CREATE_JOB_API: BASE_URL + "/jobs/createjob",
+  GET_ALL_JOBS_API: BASE_URL + "/jobs/showjobs",
+  GET_EMPLOYER_JOBS_API: BASE_URL +"/jobs/showjobs/employer",
+  GET_JOB_DETAILS: BASE_URL + "/jobs/showjobs",
+  APPLY_JOB_API: BASE_URL + "/jobs/apply",
+  GET_USER_JOBS_API: BASE_URL +"/jobs/showjobs/user"
 }

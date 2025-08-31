@@ -1,13 +1,36 @@
 import React from 'react';
 import { FaCalendarAlt, FaExternalLinkAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const JobCard = ({ 
+  jobId, // Added jobId prop
   companyName, 
   companyLogo, 
   jobTitle, 
-  lastDate, 
-  onViewDetails 
+  lastDate
 }) => {
+  const navigate = useNavigate();
+
+  // Function to format date from "2025-09-06T00:00:00.000Z" to "Sep 6, 2025"
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { 
+      year: 'numeric', 
+      month: 'short',
+      day: 'numeric' 
+    };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  // Handle button click to navigate to UserJobPost
+  const handleViewDetails = () => {
+    if (jobId) {
+      navigate(`/user-job-post/${jobId}`);
+    } else {
+      console.log("No jobId provided");
+    }
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-gray-100 hover:border-blue-200 group">
       {/* Company Logo & Name */}
@@ -17,9 +40,6 @@ const JobCard = ({
             src={companyLogo}
             alt={`${companyName} logo`}
             className="w-10 h-10 object-contain"
-            onError={(e) => {
-              e.target.src = `https://via.placeholder.com/40x40/4F46E5/white?text=${companyName.charAt(0)}`;
-            }}
           />
         </div>
         <div>
@@ -36,13 +56,13 @@ const JobCard = ({
       <div className="flex items-center space-x-2 text-gray-600 mb-6">
         <FaCalendarAlt className="text-red-500 text-sm" />
         <span className="text-sm">
-          Apply by: <span className="font-semibold text-red-600">{lastDate}</span>
+          Apply by: <span className="font-semibold text-red-600">{formatDate(lastDate)}</span>
         </span>
       </div>
 
       {/* Action Button */}
       <button
-        onClick={() => onViewDetails()}
+        onClick={handleViewDetails}
         className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
       >
         <span>View Details & Apply</span>

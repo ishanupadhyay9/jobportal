@@ -56,14 +56,17 @@ const HeroIntro = () => {
         </div>
 
         {/* Login Links */}
+        
         <div className="flex justify-center items-center gap-6">
-          <button className="flex items-center gap-2 text-gray-300 hover:text-white transition">
+          <Link to={'/login'}><button className="flex items-center gap-2 text-gray-300 hover:text-white transition">
             <FaSignInAlt /> Employer Login
-          </button>
+          </button></Link>
           <span className="text-gray-500">|</span>
-          <button className="flex items-center gap-2 text-gray-300 hover:text-white transition">
+          <Link to={'/login'}><button className="flex items-center gap-2 text-gray-300 hover:text-white transition">
             <FaSignInAlt /> Applicant Login
-          </button>
+          </button></Link>
+          
+          
         </div>
       </div>
 

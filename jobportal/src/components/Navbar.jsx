@@ -7,8 +7,12 @@ export default function Navbar() {
   const token = useSelector((state) => state.auth.token);
   const role = useSelector((state) => state.auth.role);
   const userId = useSelector((state) => state.auth.userId);
+  const userData = useSelector((state) => state.auth.userData); // Get userData from auth slice
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  // Check if employer_id exists and is not null
+  const isEmployer = userData?.employer_id != null;
   
   const handleLogout = () => {
     dispatch(logout());
@@ -17,9 +21,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-md  border-gray-200">
+    <nav className="bg-white shadow-md border-gray-200">
       <div className="container mx-auto flex items-center justify-between px-6 py-2">
-        
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-500">
@@ -36,18 +39,24 @@ export default function Navbar() {
             >
               Home
             </Link>
-            <Link
-              to="/jobs"
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
-            >
-              Jobs
-            </Link>
-            <Link
-              to="/search-jobs"
-              className="text-gray-700 hover:text-blue-600 font-medium transition"
-            >
-              Search
-            </Link>
+            {/* Show Jobs link only if employer_id is null or doesn't exist */}
+            {!isEmployer && (
+              <Link
+                to="/jobs"
+                className="text-gray-700 hover:text-blue-600 font-medium transition"
+              >
+                Jobs
+              </Link>
+            )}
+            {/* Show Search link only if employer_id is null or doesn't exist */}
+            {!isEmployer && (
+              <Link
+                to="/search-jobs"
+                className="text-gray-700 hover:text-blue-600 font-medium transition"
+              >
+                Search
+              </Link>
+            )}
           </div>
         )}
 

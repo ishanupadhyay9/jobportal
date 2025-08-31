@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import JobCard from './JobCard';
-
+import { getAllJobs } from '../../services/apicalls/jobApi';
+import { useSelector } from 'react-redux';
 const AllJobsSection = () => {
   const perPage = 12;
-  const jobs = [
-    { id: 1, companyName: "Google", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", jobTitle: "Senior Frontend Developer", lastDate: "March 15, 2025" },
-    { id: 2, companyName: "Microsoft", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", jobTitle: "Cloud Solutions Architect", lastDate: "March 20, 2025" },
-    { id: 3, companyName: "Apple", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", jobTitle: "iOS App Developer", lastDate: "March 18, 2025" },
-    { id: 4, companyName: "Netflix", companyLogo: "https://logoeps.com/wp-content/uploads/2013/03/netflix-vector-logo.png", jobTitle: "Data Scientist", lastDate: "March 25, 2025" },
-    { id: 5, companyName: "Tesla", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/b/bb/Tesla_T_symbol.svg", jobTitle: "Software Engineer - Autopilot", lastDate: "March 22, 2025" },
-    { id: 6, companyName: "Meta", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg", jobTitle: "Product Manager", lastDate: "March 28, 2025" },
-    { id: 7, companyName: "Amazon", companyLogo: "https://logoeps.com/wp-content/uploads/2012/09/amazon-vector-logo.png", jobTitle: "DevOps Engineer", lastDate: "March 30, 2025" },
-    { id: 8, companyName: "Spotify", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg", jobTitle: "Backend Developer", lastDate: "April 2, 2025" },
-    { id: 9, companyName: "Adobe", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/8/8d/Adobe_Corporate_Logo.png", jobTitle: "UX/UI Designer", lastDate: "April 5, 2025" },
-    { id: 10, companyName: "Uber", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png", jobTitle: "Machine Learning Engineer", lastDate: "April 8, 2025" },
-    { id: 11, companyName: "LinkedIn", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png", jobTitle: "Full Stack Developer", lastDate: "April 10, 2025" },
-    { id: 12, companyName: "Airbnb", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_Bélo.svg", jobTitle: "Product Designer", lastDate: "April 12, 2025" },
-    { id: 13, companyName: "Dropbox", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/7/78/Dropbox_Icon.svg", jobTitle: "Site Reliability Engineer", lastDate: "April 15, 2025" },
-    { id: 14, companyName: "Slack", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg", jobTitle: "Security Engineer", lastDate: "April 18, 2025" }
-  ];
+  const [jobs , setJobs] = useState([]);
+ const reduxToken = useSelector((state) => state.auth.token);
+  const localStorageToken = localStorage.getItem('token');
+  const token = reduxToken || localStorageToken || null;
+  useEffect(() => {
+  async function getData() {
+    const data = await getAllJobs(token);
+    console.log(data);
+    if (data.success) {
+      setJobs(data.data);
+    }
+  }
+  if (token) {
+    getData();
+  }
+}, [token]);
   const pages = Math.max(1, Math.ceil(jobs.length / perPage));
   const [page, setPage] = useState(0);
 
@@ -45,11 +46,12 @@ const AllJobsSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 mb-8">
           {visibleJobs.map(job => (
             <JobCard
-              key={job.id}
-              companyName={job.companyName}
-              companyLogo={job.companyLogo}
-              jobTitle={job.jobTitle}
-              lastDate={job.lastDate}
+              key={job.job_id}
+              jobId={job.job_id}
+              companyName={job.org}
+              companyLogo={job.org_avatar}
+              jobTitle={job.title}
+              lastDate={job.terminate_at}
               onViewDetails={() => console.log(`View ${job.id}`)}
             />
           ))}

@@ -1,3 +1,4 @@
+import React from 'react';
 import './App.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Home from './pages/Home'
@@ -9,47 +10,27 @@ import UserRegistration from './pages/UserRegistration.jsx'
 import EmployerSection from './pages/EmployerSection.jsx'
 import EmployerPost from './pages/EmployerPost.jsx'
 import Shortlisted from './pages/Shortlisted.jsx'
-import UserJobPost from './pages/UserJobPost.jsx'
+import UserJobPost from './pages/UserJobPost.jsx'  // Import UserJobPost
 import SearchJobs from './pages/SearchJobs.jsx'
-
 
 const router = createBrowserRouter(
   [
-    {path:"/",
-      element:<Home/>
-    },
-    {path:"/jobs",
-      element:<Jobs/>
-    },
-    {path:"/search-jobs",
-      element:<SearchJobs/>
-    },
-    {path:"/login",
-      element:<Login/>
-    },
-    {path:"/employer-signup",
-      element:<EmployerSignup/>
-    },
-    {path:"/user-signup",
-      element:<Signup/>
-    }
-    ,{path:"/user-personal-tab",
-      element:<UserRegistration/>
-    },
-    {path:"/employer-personal-tab",
-      element:<EmployerSection/>
-    }
+    { path: "/", element: <Home /> },
+    { path: "/jobs", element: <Jobs /> },
+    { path: "/search-jobs", element: <SearchJobs /> },
+    { path: "/login", element: <Login /> },
+    { path: "/employer-signup", element: <EmployerSignup /> },
+    { path: "/user-signup", element: <Signup /> },
+    { path: "/user-personal-tab", element: <UserRegistration /> },
+    { path: "/employer-personal-tab", element: <EmployerSection /> },
+    { path: "/employer/job/:jobId", element: <EmployerPost /> },
+    { path: "/user-job-post/:jobId", element: <UserJobPost /> }  // Added route for UserJobPost with jobId param
   ]
 )
 
 function App() {
-  
-
-
   return (
-  <RouterProvider router={router}/>
- 
-
+    <RouterProvider router={router} />
   )
 }
 
