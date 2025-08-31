@@ -5,10 +5,15 @@ import CreateJobPost from '../components/employersection/CreateJobPost.jsx'
 import Navbar from '../components/Navbar.jsx'
 import Postedjobs from '../components/employersection/Postedjobs.jsx'
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import Home from "./Home.jsx";
 const EmployerSection = () => {
   const [page,setpage]=useState(1);
+  const token = useSelector((state)=>state.auth.token);
   return (
-    <div className='flex flex-col'>
+  <div>
+    {
+      token? <div className='flex flex-col'>
       
       <Navbar/>
       <div className='flex'>
@@ -22,6 +27,9 @@ const EmployerSection = () => {
        </div>
    
     </div>
+    :<Home/>
+    }
+  </div>
   )
 }
 

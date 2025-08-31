@@ -1,41 +1,67 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    loading:false,
-    token: localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token")) : null,
-    userData:null,
-    userId:null,
-    isRegistered:false,
-    role:"user"
-
+  loading: false,
+  // Retrieve token directly as a string (avoid JSON.parse error)
+  token: localStorage.getItem("token") ? localStorage.getItem("token") : null,
+  userData: {},
+  userId: "",
+  isRegistered: false,
+  role: "",
 };
+
 export const authSlice = createSlice({
-    name: 'auth',
-    initialState:initialState,
-    reducers:{
-       setLoading : (state,value) =>{
-        state.loading = value.payload
-       },
-        setToken : (state,value) =>{
-        state.loading = value.payload
-       },
-        setUserId : (state,value) =>{
-        state.loading = value.payload
-       },
-        setUserData : (state,value) =>{
-        state.loading = value.payload
-       },
+  name: "auth",
+  initialState: initialState,
+  reducers: {
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    printAuth:(state)=>{
+console.log(state);
+    },
 
-       setIsRegistered :(state, value) =>{
-        state.isRegistered = value.payload
-       },
-
-       setRole :(state , value)=>{
-state.role = value.payload
-       }
-
-    }
+    setToken: (state, action) => {
+      state.token = action.payload;
+      // Optional: store token in localStorage for persistence
+      if (action.payload) {
+        localStorage.setItem("token", action.payload);
+      } else {
+        localStorage.removeItem("token");
+      }
+    },
+    setUserId: (state, action) => {
+      state.userId = action.payload;
+    },
+    setUserData: (state, action) => {
+      state.userData = action.payload;
+    },
+    setIsRegistered: (state, action) => {
+      state.isRegistered = action.payload;
+    },
+    setRole: (state, action) => {
+      state.role = action.payload;
+    },
+    logout: (state) => {
+      state.token = null;
+      state.userData = {};
+      state.userId = "";
+      state.isRegistered = false;
+      state.role = "";
+      localStorage.removeItem("token");
+    },
+  },
 });
 
-export const {setLoading,setUserData,setUserId,setToken,setIsRegistered,setRole} =authSlice.actions;
+export const {
+  setLoading,
+  setUserData,
+  setUserId,
+  setToken,
+  setIsRegistered,
+  setRole,
+  logout,
+  printAuth
+} = authSlice.actions;
+
 export default authSlice.reducer;

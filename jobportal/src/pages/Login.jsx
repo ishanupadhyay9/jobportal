@@ -1,9 +1,26 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom'; // corrected import
 import img from "../images/Consulting.gif";
+import { useDispatch } from 'react-redux';
+import { setLoading } from '../redux/slices/authSlice';
+import { login } from '../services/apicalls/authApi';
 
 const Login = () => {
-  const [role, setRole] = useState('employee');
+  const [role, setRole] = useState('user'); // Default role 'user' (employee)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    dispatch(setLoading(true));
+    console.log({ email, password, role });
+    
+    const res = await login(dispatch,navigate,email,role, password);
+  console.log(res);
+    dispatch(setLoading(false));
+    // Example: call your login API or dispatch redux action here
+  };
 
   return (
     <div
@@ -24,9 +41,9 @@ const Login = () => {
               <input
                 type="radio"
                 name="role"
-                value="employee"
-                checked={role === 'employee'}
-                onChange={() => setRole('employee')}
+                value="user"
+                checked={role === 'user'}
+                onChange={() => setRole('user')}
                 className="radio radio-primary"
               />
               <span className="text-gray-700">Employee</span>
@@ -44,12 +61,12 @@ const Login = () => {
             </label>
           </div>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
                 <h2 className="text-xl font-semibold">Welcome Back</h2>
                 <p className="text-sm opacity-70">
-                  {role === 'employee'
+                  {role === 'user'
                     ? 'Sign in to your account to search jobs'
                     : 'Sign in to manage your job postings'}
                 </p>
@@ -64,6 +81,8 @@ const Login = () => {
                     type="email"
                     placeholder="hello@example.com"
                     className="input input-bordered w-full"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
@@ -76,6 +95,8 @@ const Login = () => {
                     type="password"
                     placeholder="••••••••"
                     className="input input-bordered w-full"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                 </div>
@@ -110,7 +131,7 @@ const Login = () => {
             <div className="text-center space-y-3 mt-6">
               <h2 className="text-xl font-semibold">Begin your journey!!</h2>
               <p className="opacity-70">
-                {role === 'employee'
+                {role === 'user'
                   ? 'Find jobs that suit your skill set'
                   : 'Attract top talent and grow your team'}
               </p>

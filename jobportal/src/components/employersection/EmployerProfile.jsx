@@ -1,327 +1,170 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { getEmployer, setEmployerDetails } from "../../services/apicalls/authApi";
+import { setUserData, setUserId } from "../../redux/slices/authSlice";
 
-const EmployerProfile = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    city: '',
-    state: '',
-    country: '',
-    organizationName: '',
-    gender: ''
-  });
+export default function EmployerProfileForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [logoPreview, setLogoPreview] = useState('');
-  const [logoFile, setLogoFile] = useState(null);
-  const [uploadMessage, setUploadMessage] = useState('');
-  const fileInputRef = useRef(null);
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [male, setMale] = useState("true");
+  const [org, setOrg] = useState("");
+  const [city, setCity] = useState("");
+  const [stateVal, setStateVal] = useState("");
+  const [country, setCountry] = useState("");
+  const [logofile, setLogofile] = useState(null);
+  const token2 = useSelector((state) => state.auth.token);
+  const [previewUrl, setPreviewUrl] = useState("");
 
-  const genderOptions = ['Male', 'Female', 'Other', 'Prefer not to say'];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getEmployer(dispatch,token2);
+        console.log(res);
+        dispatch(setUserData(res.data));
+        setUserId(res.data.employer_id);
+   setCity(res.data.city);
+   setCountry(res.data.country);
+   setFirstname(res.data.firstname);
+   setLastname(res.data.lastname);
+   setOrg(res.data.org);
+   setStateVal(res.data.state);
+   setLogofile(res.data.org_avatar);
+        
+        if (res.data.org_avatar) setPreviewUrl(res.data.org_avatar);
+      } catch (error) {
+        console.error("Error fetching employer:", error);
+      }
+    };
+    fetchData();
+  }, [token2]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  };
-
-  const validateFile = (file) => {
-    const maxFileSize = 5242880; // 5MB
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-    
-    if (!file) return { isValid: false, message: 'Please select a file.' };
-    
-    if (!allowedTypes.includes(file.type)) {
-      return { 
-        isValid: false, 
-        message: 'Please select a valid image file (JPEG, PNG, GIF, WebP).' 
-      };
-    }
-    
-    if (file.size > maxFileSize) {
-      return { 
-        isValid: false, 
-        message: 'File size must be less than 5MB.' 
-      };
-    }
-    
-    return { isValid: true, message: '' };
-  };
-
-  const handleSelectLogo = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
+  const onFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setLogofile(e.target.files[0]);
+      setPreviewUrl(URL.createObjectURL(e.target.files[0]));
+    } else {
+      setLogofile(null);
+      setPreviewUrl("");
     }
   };
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    setUploadMessage('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    if (!file) return;
-
-    const validation = validateFile(file);
-    
-    if (!validation.isValid) {
-      setUploadMessage(validation.message);
+    if (!firstname || !lastname || !org || !city || !stateVal || !country || !logofile) {
+      toast.error("Please fill all required fields and upload avatar image.");
       return;
     }
 
-    try {
-      const base64 = await convertToBase64(file);
-      setLogoPreview(base64);
-      setLogoFile(file);
-      setUploadMessage('Logo uploaded successfully!');
-    } catch (error) {
-      setUploadMessage('Error uploading file. Please try again.');
-    }
-  };
-
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  };
-
-  const handleRemoveLogo = () => {
-    setLogoPreview('');
-    setLogoFile(null);
-    setUploadMessage('');
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
-  };
-
-  const handleSave = (e) => {
-    e.preventDefault();
-    // Handle save logic here
-    console.log('Form Data:', formData);
-    console.log('Logo File:', logoFile);
-    alert('Profile saved successfully!');
+    await setEmployerDetails(
+      dispatch,
+      navigate,
+      firstname,
+      lastname,
+      male,
+      org,
+      city,
+      stateVal,
+      country,
+      logofile
+    );
   };
 
   return (
-    <div className="max-w-6xl w-[1000px] mx-auto p-8 bg-white rounded-2xl mt-5">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-black mb-2 text-center">Employer Profile</h1>
-      </div>
-
-      <form className="space-y-8" onSubmit={handleSave}>
-        {/* Organization Information Section */}
-        <div className="bg-white p-8 rounded-lg shadow-lg border">
-          <h2 className="text-2xl font-semibold text-black mb-6">Organization Information</h2>
-          
-          <div className="mb-8">
-            <label htmlFor="organizationName" className="block text-base font-medium text-black mb-2">
-              Organization Name
-            </label>
-            <input
-              type="text"
-              id="organizationName"
-              name="organizationName"
-              placeholder="Enter organization name"
-              value={formData.organizationName}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-black placeholder-opacity-70 text-black"
-              required
+    <div className="min-h-screen w-full  flex items-center justify-center p-8">
+      <form
+        className="w-full  bg-white ml-20 rounded-2xl shadow-2xl p-10 space-y-7 border border-gray-100"
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+      >
+        {/* Avatar preview moved to top */}
+        {previewUrl && (
+          <div className="flex justify-center mb-6">
+            <img
+              src={previewUrl}
+              alt="Organization Avatar Preview"
+              className="w-36 h-36 rounded-full border-8 border-white shadow-xl object-cover hover:scale-105 transition-transform duration-300"
             />
           </div>
+        )}
 
-          {/* Organization Logo Section */}
-          <div>
-            <label className="block text-base font-medium text-black mb-4">
-              Organization Logo
-            </label>
-            
-            <div className="flex flex-col items-center space-y-6">
-              {/* Logo Preview Area */}
-              <div className="w-60 h-60 border-2 border-dashed border-black rounded-lg flex items-center justify-center bg-white">
-                {logoPreview ? (
-                  <img
-                    src={logoPreview}
-                    alt="Organization Logo"
-                    className="w-full h-full object-contain rounded-lg"
-                  />
-                ) : (
-                  <div className="text-center text-black">
-                    <svg className="mx-auto h-16 w-16 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p className="text-base font-medium">No logo selected</p>
-                  </div>
-                )}
-              </div>
+        <h2 className="text-4xl font-extrabold text-gray-800 text-center tracking-wide">
+          Create Employer Profile
+        </h2>
+        <p className="text-center text-gray-500 mb-8">
+          Fill in the details to create your professional profile
+        </p>
 
-              {/* File Upload Controls */}
-              <div className="flex space-x-4">
-                <button
-                  type="button"
-                  onClick={handleSelectLogo}
-                  className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 text-base font-medium"
-                >
-                  Select Logo
-                </button>
-                
-                {logoPreview && (
-                  <button
-                    type="button"
-                    onClick={handleRemoveLogo}
-                    className="px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 text-base font-medium"
-                  >
-                    Remove Logo
-                  </button>
-                )}
-              </div>
-
-              {/* Hidden File Input */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                className="hidden"
-              />
-
-              {/* Upload Message */}
-              {uploadMessage && (
-                <p className={`text-base font-medium ${uploadMessage.includes('successfully') ? 'text-green-600' : 'text-red-600'}`}>
-                  {uploadMessage}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Personal Information Section */}
-        <div className="bg-white p-8 rounded-lg shadow-lg border">
-          <h2 className="text-2xl font-semibold text-black mb-6">Personal Information</h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <div>
-              <label htmlFor="firstName" className="block text-base font-medium text-black mb-2">
-                Employer First Name
-              </label>
-              <input
-                type="text"
-                id="firstName"
-                name="firstName"
-                placeholder="Enter first name"
-                value={formData.firstName}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-black placeholder-opacity-70 text-black"
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="lastName" className="block text-base font-medium text-black mb-2">
-                Employer Last Name
-              </label>
-              <input
-                type="text"
-                id="lastName"
-                name="lastName"
-                placeholder="Enter last name"
-                value={formData.lastName}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-black placeholder-opacity-70 text-black"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="gender" className="block text-base font-medium text-black mb-2">
-              Employer Gender
-            </label>
-            <select
-              id="gender"
-              name="gender"
-              value={formData.gender}
-              onChange={handleInputChange}
-              className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
+        {[{
+          id: "firstname", label: "First Name", value: firstname, setter: setFirstname
+        }, {
+          id: "lastname", label: "Last Name", value: lastname, setter: setLastname
+        }, {
+          id: "org", label: "Organization", value: org, setter: setOrg
+        }, {
+          id: "city", label: "City", value: city, setter: setCity
+        }, {
+          id: "state", label: "State", value: stateVal, setter: setStateVal
+        }, {
+          id: "country", label: "Country", value: country, setter: setCountry
+        }].map(({ id, label, value, setter }) => (
+          <div key={id} className="flex flex-col">
+            <label htmlFor={id} className="mb-3 font-semibold text-gray-700">{label}</label>
+            <input
+              id={id}
+              name={id}
+              type="text"
+              value={value}
+              onChange={(e) => setter(e.target.value)}
               required
-            >
-              <option value="" className="text-black">Select Gender</option>
-              {genderOptions.map(option => (
-                <option key={option} value={option} className="text-black">{option}</option>
-              ))}
-            </select>
+              className="border border-gray-300 rounded-lg px-5 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-3 focus:ring-blue-400 focus:border-blue-400 transition duration-200"
+              style={{ color: '#1a202c' }} // enforce dark text color
+            />
           </div>
+        ))}
+
+        <div className="flex flex-col">
+          <label htmlFor="male" className="mb-3 font-semibold text-gray-700">Gender</label>
+          <select
+            id="male"
+            name="male"
+            value={male}
+            onChange={(e) => setMale(e.target.value)}
+            className="border border-gray-300 rounded-lg px-5 py-3 text-gray-900 focus:outline-none focus:ring-3 focus:ring-blue-400 transition duration-200"
+            style={{ color: '#1a202c' }} // enforce dark text color
+          >
+            <option value="true">Male</option>
+            <option value="false">Female</option>
+          </select>
         </div>
 
-        {/* Location Information Section */}
-        <div className="bg-white p-8 rounded-lg shadow-lg border">
-          <h2 className="text-2xl font-semibold text-black mb-6">Location Information</h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div>
-              <label htmlFor="city" className="block text-base font-medium text-black mb-2">
-                City
-              </label>
-              <input
-                type="text"
-                id="city"
-                name="city"
-                placeholder="Enter city"
-                value={formData.city}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-black placeholder-opacity-70 text-black"
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="state" className="block text-base font-medium text-black mb-2">
-                State
-              </label>
-              <input
-                type="text"
-                id="state"
-                name="state"
-                placeholder="Enter state"
-                value={formData.state}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-black placeholder-opacity-70 text-black"
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="country" className="block text-base font-medium text-black mb-2">
-                Country
-              </label>
-              <input
-                type="text"
-                id="country"
-                name="country"
-                placeholder="Enter country"
-                value={formData.country}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-black placeholder-opacity-70 text-black"
-                required
-              />
-            </div>
-          </div>
+        <div className="flex flex-col">
+          <label htmlFor="logo" className="mb-3 font-semibold text-gray-700">
+            Organization image
+          </label>
+          <input
+            id="logo"
+            name="logo"
+            type="file"
+            accept="image/*"
+            onChange={onFileChange}
+            required={!logofile}
+            className="border border-gray-300 rounded-lg px-4 py-3 file:mr-4 file:py-2 file:px-5 file:rounded-full file:border-0 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 text-black transition"
+          />
         </div>
 
-        
-        {/* Save Button */}
-        <div className="flex justify-center pt-6">
-                <button
-                  type="submit"
-                  className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold px-12 py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300"
-                >
-                  Save Profile
-                </button>
-              </div>
+        <button
+          type="submit"
+          className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-semibold text-xl shadow-lg hover:shadow-xl hover:scale-[1.03] transition-transform duration-300"
+        >
+          Create Employer Profile
+        </button>
       </form>
     </div>
   );
-};
-
-export default EmployerProfile;
+}

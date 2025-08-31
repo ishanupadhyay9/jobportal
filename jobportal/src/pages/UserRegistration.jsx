@@ -3,11 +3,16 @@ import SidebarProfile from '../components/SidebarProfile.jsx';
 import ProfileSetter from '../components/ProfileSetter.jsx';
 import Myapplications from "../components/Myapplications.jsx"
 import Navbar from '../components/Navbar.jsx';
+import { useSelector } from 'react-redux';
+import Home from './Home.jsx';
 const UserRegistration = () => {
+  const token = useSelector((state)=>state.auth.token);
   const [showProfile, setShowProfile] = useState(true);
   return (
     
 <div>
+  {
+    token? <div>
   <Navbar/>
     <div className='flex'>
 <SidebarProfile showprofile={showProfile} setShowProfile={setShowProfile}/>
@@ -17,6 +22,9 @@ const UserRegistration = () => {
   }
  </div>
 </div>
+</div>
+    :<Home/>
+  }
 </div>
   );
 }
