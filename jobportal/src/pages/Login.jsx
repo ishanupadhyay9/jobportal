@@ -1,26 +1,35 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // corrected import
+import { Link, useNavigate } from 'react-router-dom';
 import img from "../images/Consulting.gif";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../redux/slices/authSlice';
 import { login } from '../services/apicalls/authApi';
+import LoadingScreen from "../components/LoadingScreen";
 
 const Login = () => {
-  const [role, setRole] = useState('user'); // Default role 'user' (employee)
+  const [role, setRole] = useState('user');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const handleSubmit = async(e) => {
+
+  const isLoading = useSelector(state => state.auth.loading);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(setLoading(true));
-    console.log({ email, password, role });
-    
-    const res = await login(dispatch,navigate,email,role, password);
-  console.log(res);
-    dispatch(setLoading(false));
-    // Example: call your login API or dispatch redux action here
+    try {
+      await login(dispatch, navigate, email, role, password);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      dispatch(setLoading(false));
+    }
   };
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div
@@ -45,6 +54,7 @@ const Login = () => {
                 checked={role === 'user'}
                 onChange={() => setRole('user')}
                 className="radio radio-primary"
+                disabled={isLoading}
               />
               <span className="text-gray-700">Employee</span>
             </label>
@@ -56,6 +66,7 @@ const Login = () => {
                 checked={role === 'employer'}
                 onChange={() => setRole('employer')}
                 className="radio radio-secondary"
+                disabled={isLoading}
               />
               <span className="text-gray-700">Employer</span>
             </label>
@@ -84,6 +95,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={isLoading}
                   />
                 </div>
 
@@ -98,11 +110,16 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    disabled={isLoading}
                   />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-full">
-                  Login
+                <button
+                  type="submit"
+                  className="btn btn-primary w-full"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Logging in...' : 'Login'}
                 </button>
 
                 <div className="text-center mt-4">
@@ -123,7 +140,7 @@ const Login = () => {
             <div className="relative aspect-square max-w-sm mx-auto">
               <img
                 src={img}
-                alt="Language connection illustration"
+                alt="Consulting illustration"
                 className="w-full h-full rounded-3xl"
               />
             </div>
