@@ -1,21 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getUser, setUserProfile } from "../services/apicalls/authApi";
+import { getUser, setUserProfile } from "../services/apicalls/authApi"; // adjust path if needed
 import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 import { setRole, setUserData, setUserId } from "../redux/slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
 
 const ProfileSetter = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading ,setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    profilePicture: null, 
+    profilePicture: null,         // will be sent as imageFile
     firstName: "",
     lastName: "",
     age: "",
-    gender: "",
+    gender: "",                   // 'male' / 'female' / 'other'
     city: "",
     state: "",
     country: "",
@@ -27,70 +28,93 @@ const ProfileSetter = () => {
     postgradCourse: "",
     postgradCGPA: "",
     postgradInstitute: "",
-    resume: null 
+    resume: null                  // will be sent as pdfFile
   });
-  const token2 = useSelector((state) => state.auth.token);
+  const token2 = useSelector((state)=>state.auth.token);
   const [profilePreview, setProfilePreview] = useState(null);
   const [resumeFileName, setResumeFileName] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const res = await getUser(dispatch, token2);
-        dispatch(setUserData(res.data));
-        dispatch(setUserId(res.data.user_id));
-        dispatch(setRole("user"));
-        const data = res.data;
-        setFormData({
-          profilePicture: data.user_avatar_link,
-          firstName: data.firstname,
-          lastName: data.lastname,
-          age: data.age,
-          gender: data.male === true ? "male" : data.male === false ? "female" : "",
-          city: data.city,
-          state: data.state,
-          country: data.country,
-          tenthPercentage: data["10th_percentage"],
-          twelfthPercentage: data["12_percentage"],
-          undergradCourse: data.undergrad_degree,
-          undergradCGPA: data.undergrad_cgpa,
-          undergradInstitute: data.undergrad_institute,
-          postgradCourse: data.postgrad_degree,
-          postgradCGPA: data.postgrad_cgpa,
-          postgradInstitute: data.postgrad_institute,
-          resume: data.resume_link
-        });
-      } catch (error) {
-        console.error("Error fetching employer:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [token2]);
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            setLoading(true);
+            const res = await getUser(dispatch,token2);
+            console.log(res.data);
+            dispatch(setUserData(res.data));
+            dispatch(setUserId(res.data.user_id));
+            dispatch(setRole("user"));
+
+            const data = res.data;
+
+setFormData({
+  profilePicture: data.user_avatar_link,
+  firstName: data.firstname,
+  lastName: data.lastname,
+  age: data.age,
+  gender: data.male === true ? "male" : data.male === false ? "female" : "",
+
+  city: data.city,
+  state: data.state,
+  country: data.country,
+
+  tenthPercentage: data["10th_percentage"],
+  twelfthPercentage: data["12_percentage"],
+
+  undergradCourse: data.undergrad_degree,
+  undergradCGPA: data.undergrad_cgpa,
+  undergradInstitute: data.undergrad_institute,
+
+  postgradCourse: data.postgrad_degree,
+  postgradCGPA: data.postgrad_cgpa,
+  postgradInstitute: data.postgrad_institute,
+
+  resume: data.resume_link
+});
+          } catch (error) {
+            console.error("Error fetching employer:", error);
+          }
+          finally{
+            setLoading(false);
+          }
+        };
+        fetchData();
+      }, [token2]);
 
   const undergraduateCourses = [
-    "B.Sc", "B.Tech", "B.E", "B.Com", "B.A", "BCA", "Other"
+    "B.Sc",
+    "B.Tech",
+    "B.E",
+    "B.Com",
+    "B.A",
+    "BCA",
+    "Other"
   ];
+
   const postgraduateCourses = [
-    "M.Sc", "M.Tech", "M.E", "M.Com", "M.A", "MCA", "MBA", "Other"
+    "M.Sc",
+    "M.Tech",
+    "M.E",
+    "M.Com",
+    "M.A",
+    "MCA",
+    "MBA",
+    "Other"
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleProfileFileChange = (e) => {
     const file = e.target.files?.[0] || null;
     if (file) {
-      setFormData((prev) => ({ ...prev, profilePicture: file }));
+      setFormData(prev => ({ ...prev, profilePicture: file }));
       const reader = new FileReader();
       reader.onload = (ev) => setProfilePreview(ev.target.result);
       reader.readAsDataURL(file);
     } else {
-      setFormData((prev) => ({ ...prev, profilePicture: null }));
+      setFormData(prev => ({ ...prev, profilePicture: null }));
       setProfilePreview(null);
     }
   };
@@ -103,16 +127,16 @@ const ProfileSetter = () => {
         e.target.value = "";
         return;
       }
-      setFormData((prev) => ({ ...prev, resume: file }));
+      setFormData(prev => ({ ...prev, resume: file }));
       setResumeFileName(file.name);
     } else {
-      setFormData((prev) => ({ ...prev, resume: null }));
+      setFormData(prev => ({ ...prev, resume: null }));
       setResumeFileName("");
     }
   };
 
   const removeResume = () => {
-    setFormData((prev) => ({ ...prev, resume: null }));
+    setFormData(prev => ({ ...prev, resume: null }));
     setResumeFileName("");
     const fileInput = document.querySelector('input[name="resume"]');
     if (fileInput) fileInput.value = "";
@@ -139,13 +163,15 @@ const ProfileSetter = () => {
       setLoading(false);
       return;
     }
+
     try {
       await setUserProfile(
-        dispatch, navigate,
+        dispatch,
+        navigate,
         formData.firstName,
         formData.lastName,
-        formData.age ? Number(formData.age) : "",
-        formData.gender.toLowerCase() === "male",
+        formData.age ? Number(formData.age) : "", // age as number if present
+        (formData.gender.toLowerCase() === "male"), // male boolean
         formData.city,
         formData.state,
         formData.country,
@@ -157,44 +183,34 @@ const ProfileSetter = () => {
         formData.postgradInstitute,
         formData.undergradCourse,
         formData.postgradCourse,
-        formData.resume,
-        formData.profilePicture
+        formData.resume,          // pdfFile
+        formData.profilePicture   // imageFile (optional)
       );
+      // setUserProfile handles toasts/navigation on success. If it returns something falsy, show generic toast (defensive).
+      // (No extra actions here to avoid duplicating navigation/toasts.)
     } catch (err) {
       console.error("Error submitting profile:", err);
       toast.error("Failed to save profile.");
-    } finally {
+    }
+    finally{
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #000b33, #4b006d)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "16px",
-        width: "100%"
-      }}
-    >
-      {loading ? (
-        <LoadingScreen />
-      ) : (
-        <div className="card" style={{ maxWidth: "1000px", width: "100%", backgroundColor: "rgba(30, 0, 60, 0.85)", boxShadow: "0 0 15px rgba(107, 15, 255, 0.6)" }}>
+    <div>
+    {
+      (loading) ? <LoadingScreen/> :
+    <div>
+      <div className="min-h-screen bg-base-100 flex items-center justify-center p-4 w-[100%]">
+        <div className="card bg-base-200 w-full shadow-xl">
           <div
-            className="card-body"
-            style={{ padding: "24px", overflowX: "auto", borderRadius: "12px" }}
+            className="flex card-body justify-center ml-[50px] overflow-x-scroll items-center p-6 sm:p-8 rounded-md w-[1000px]"
             data-theme={"light"}
           >
             <div className="w-full max-w-4xl">
-              <h1
-                className="text-2xl sm:text-3xl font-bold text-center mb-6"
-                style={{ color: "#d3d0ff" }}
-              >
-                Update Profile
+              <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6">
+                Update Your Profile
               </h1>
 
               <form onSubmit={handleSubmit} className="space-y-8">
@@ -202,9 +218,7 @@ const ProfileSetter = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        First Name
-                      </span>
+                      <span className="label-text">First Name</span>
                     </label>
                     <input
                       name="firstName"
@@ -218,9 +232,7 @@ const ProfileSetter = () => {
 
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        Last Name
-                      </span>
+                      <span className="label-text">Last Name</span>
                     </label>
                     <input
                       name="lastName"
@@ -234,9 +246,7 @@ const ProfileSetter = () => {
 
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        Age
-                      </span>
+                      <span className="label-text">Age</span>
                     </label>
                     <input
                       name="age"
@@ -251,9 +261,7 @@ const ProfileSetter = () => {
 
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        Gender
-                      </span>
+                      <span className="label-text">Gender</span>
                     </label>
                     <select
                       name="gender"
@@ -273,9 +281,7 @@ const ProfileSetter = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        City
-                      </span>
+                      <span className="label-text">City</span>
                     </label>
                     <input
                       name="city"
@@ -289,9 +295,7 @@ const ProfileSetter = () => {
 
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        State
-                      </span>
+                      <span className="label-text">State</span>
                     </label>
                     <input
                       name="state"
@@ -305,9 +309,7 @@ const ProfileSetter = () => {
 
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        Country
-                      </span>
+                      <span className="label-text">Country</span>
                     </label>
                     <input
                       name="country"
@@ -324,9 +326,7 @@ const ProfileSetter = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        10th Percentage
-                      </span>
+                      <span className="label-text">10th Percentage</span>
                     </label>
                     <input
                       name="tenthPercentage"
@@ -340,9 +340,7 @@ const ProfileSetter = () => {
 
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        12th Percentage
-                      </span>
+                      <span className="label-text">12th Percentage</span>
                     </label>
                     <input
                       name="twelfthPercentage"
@@ -357,15 +355,11 @@ const ProfileSetter = () => {
 
                 {/* Undergraduate */}
                 <div className="border p-4 rounded-md">
-                  <h2 className="font-semibold mb-3" style={{ color: "#d3d0ff" }}>
-                    Undergraduate
-                  </h2>
+                  <h2 className="font-semibold mb-3">Undergraduate</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="label">
-                        <span className="label-text" style={{ color: "#d3d0ff" }}>
-                          Degree
-                        </span>
+                        <span className="label-text">Degree</span>
                       </label>
                       <select
                         name="undergradCourse"
@@ -375,18 +369,14 @@ const ProfileSetter = () => {
                       >
                         <option value="">Select degree</option>
                         {undergraduateCourses.map((c) => (
-                          <option value={c} key={c}>
-                            {c}
-                          </option>
+                          <option value={c} key={c}>{c}</option>
                         ))}
                       </select>
                     </div>
 
                     <div>
                       <label className="label">
-                        <span className="label-text" style={{ color: "#d3d0ff" }}>
-                          CGPA
-                        </span>
+                        <span className="label-text">CGPA</span>
                       </label>
                       <input
                         name="undergradCGPA"
@@ -400,9 +390,7 @@ const ProfileSetter = () => {
 
                     <div>
                       <label className="label">
-                        <span className="label-text" style={{ color: "#d3d0ff" }}>
-                          Institute
-                        </span>
+                        <span className="label-text">Institute</span>
                       </label>
                       <input
                         name="undergradInstitute"
@@ -418,15 +406,11 @@ const ProfileSetter = () => {
 
                 {/* Postgraduate */}
                 <div className="border p-4 rounded-md">
-                  <h2 className="font-semibold mb-3" style={{ color: "#d3d0ff" }}>
-                    Postgraduate (if any)
-                  </h2>
+                  <h2 className="font-semibold mb-3">Postgraduate (if any)</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="label">
-                        <span className="label-text" style={{ color: "#d3d0ff" }}>
-                          Degree
-                        </span>
+                        <span className="label-text">Degree</span>
                       </label>
                       <select
                         name="postgradCourse"
@@ -436,18 +420,14 @@ const ProfileSetter = () => {
                       >
                         <option value="">Select degree</option>
                         {postgraduateCourses.map((c) => (
-                          <option value={c} key={c}>
-                            {c}
-                          </option>
+                          <option value={c} key={c}>{c}</option>
                         ))}
                       </select>
                     </div>
 
                     <div>
                       <label className="label">
-                        <span className="label-text" style={{ color: "#d3d0ff" }}>
-                          CGPA
-                        </span>
+                        <span className="label-text">CGPA</span>
                       </label>
                       <input
                         name="postgradCGPA"
@@ -461,9 +441,7 @@ const ProfileSetter = () => {
 
                     <div>
                       <label className="label">
-                        <span className="label-text" style={{ color: "#d3d0ff" }}>
-                          Institute
-                        </span>
+                        <span className="label-text">Institute</span>
                       </label>
                       <input
                         name="postgradInstitute"
@@ -481,9 +459,7 @@ const ProfileSetter = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        Profile Picture (optional)
-                      </span>
+                      <span className="label-text">Profile Picture (optional)</span>
                     </label>
                     <input
                       name="profilePicture"
@@ -505,9 +481,7 @@ const ProfileSetter = () => {
 
                   <div>
                     <label className="label">
-                      <span className="label-text" style={{ color: "#d3d0ff" }}>
-                        Resume (PDF) *
-                      </span>
+                      <span className="label-text">Resume (PDF) *</span>
                     </label>
                     <input
                       name="resume"
@@ -518,9 +492,7 @@ const ProfileSetter = () => {
                     />
                     {resumeFileName ? (
                       <div className="mt-2 flex items-center gap-3">
-                        <span className="badge badge-outline">
-                          {getFileIcon(resumeFileName)}
-                        </span>
+                        <span className="badge badge-outline">{getFileIcon(resumeFileName)}</span>
                         <span>{resumeFileName}</span>
                         <button
                           type="button"
@@ -544,7 +516,8 @@ const ProfileSetter = () => {
             </div>
           </div>
         </div>
-      )}
+      </div>
+    </div>}
     </div>
   );
 };
