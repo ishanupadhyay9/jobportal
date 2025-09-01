@@ -33,7 +33,6 @@ const ProfileSetter = () => {
   });
   const [profilePreview, setProfilePreview] = useState(null);
   const [resumeFileName, setResumeFileName] = useState("");
-  const [resumeUrl, setResumeUrl] = useState("");
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -67,9 +66,6 @@ const ProfileSetter = () => {
         });
         if (data.user_avatar_link) {
           setProfilePreview(data.user_avatar_link);
-        }
-        if (data.resume_link) {
-          setResumeUrl(data.resume_link);
         }
       } catch (err) {
         if (err.response?.status === 404) {
@@ -108,7 +104,6 @@ const ProfileSetter = () => {
     }
     setFormData(prev => ({ ...prev, resume: file }));
     setResumeFileName(file?.name || "");
-    setResumeUrl("");
   };
 
   const handleSubmit = async (e) => {
@@ -170,9 +165,6 @@ const ProfileSetter = () => {
         );
       }
       console.log("save response:", res);
-      if (res?.data?.profile?.resume_link) {
-        setResumeUrl(res.data.profile.resume_link);
-      }
     } catch (err) {
       console.error("Error saving profile:", err);
       toast.error("Failed to save profile.");
@@ -198,6 +190,7 @@ const ProfileSetter = () => {
             </div>
           )}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Personal Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 name="firstName"
@@ -214,7 +207,132 @@ const ProfileSetter = () => {
                 className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
               />
             </div>
-            {/* ... other fields ... */}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input
+                name="age"
+                type="number"
+                value={formData.age}
+                onChange={handleInputChange}
+                placeholder="Age"
+                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                min={0}
+              />
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleInputChange}
+                className="border border-gray-300 rounded px-4 py-2 w-full text-black"
+              >
+                <option value="" className="text-black">Select Gender</option>
+                <option value="male" className="text-black">Male</option>
+                <option value="female" className="text-black">Female</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <input
+                name="city"
+                value={formData.city}
+                onChange={handleInputChange}
+                placeholder="City"
+                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+              />
+              <input
+                name="state"
+                value={formData.state}
+                onChange={handleInputChange}
+                placeholder="State"
+                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+              />
+              <input
+                name="country"
+                value={formData.country}
+                onChange={handleInputChange}
+                placeholder="Country"
+                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input
+                name="tenthPercentage"
+                value={formData.tenthPercentage}
+                onChange={handleInputChange}
+                placeholder="10th %"
+                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+              />
+              <input
+                name="twelfthPercentage"
+                value={formData.twelfthPercentage}
+                onChange={handleInputChange}
+                placeholder="12th %"
+                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+              />
+            </div>
+
+            <div className="border-t pt-4">
+              <h2 className="font-semibold mb-3 text-black">Undergraduate</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <select
+                  name="undergradCourse"
+                  value={formData.undergradCourse}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black"
+                >
+                  <option value="">Degree</option>
+                  {["B.Sc","B.Tech","B.E","B.Com","B.A","BCA","Other"].map(c => (
+                    <option key={c} value={c} className="text-black">{c}</option>
+                  ))}
+                </select>
+                <input
+                  name="undergradCGPA"
+                  value={formData.undergradCGPA}
+                  onChange={handleInputChange}
+                  placeholder="CGPA"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                />
+                <input
+                  name="undergradInstitute"
+                  value={formData.undergradInstitute}
+                  onChange={handleInputChange}
+                  placeholder="Institute"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                />
+              </div>
+            </div>
+
+            <div className="border-t pt-4">
+              <h2 className="font-semibold mb-3 text-black">Postgraduate (if any)</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <select
+                  name="postgradCourse"
+                  value={formData.postgradCourse}
+                  onChange={handleInputChange}
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black"
+                >
+                  <option value="">Degree</option>
+                  {["M.Sc","M.Tech","M.E","M.Com","M.A","MCA","MBA","Other"].map(c => (
+                    <option key={c} value={c} className="text-black">{c}</option>
+                  ))}
+                </select>
+                <input
+                  name="postgradCGPA"
+                  value={formData.postgradCGPA}
+                  onChange={handleInputChange}
+                  placeholder="CGPA"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                />
+                <input
+                  name="postgradInstitute"
+                  value={formData.postgradInstitute}
+                  onChange={handleInputChange}
+                  placeholder="Institute"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block mb-1 text-black">Profile Picture</label>
@@ -223,6 +341,7 @@ const ProfileSetter = () => {
                   accept="image/*"
                   onChange={handleProfileFileChange}
                   className="border border-gray-300 rounded p-2 w-full"
+                  name="profilePicture"
                 />
               </div>
               <div>
@@ -232,9 +351,23 @@ const ProfileSetter = () => {
                   accept="application/pdf"
                   onChange={handleResumeChange}
                   className="border border-gray-300 rounded p-2 w-full"
+                  name="resume"
                 />
+                {resumeFileName && (
+                  <div className="flex items-center mt-2">
+                    <span className="text-black mr-2">{resumeFileName}</span>
+                    <button
+                      type="button"
+                      onClick={() => { setFormData(prev => ({...prev, resume:null})); setResumeFileName(""); }}
+                      className="text-red-500"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
+
             <button
               type="submit"
               className="w-full bg-blue-600 text-white rounded px-4 py-2 mt-4 hover:bg-blue-700"
@@ -242,20 +375,6 @@ const ProfileSetter = () => {
               Save Profile
             </button>
           </form>
-          {/* Resume Display Box */}
-          {resumeUrl && (
-            <div className="mt-8 p-4 border border-gray-300 rounded bg-gray-50">
-              <h2 className="font-semibold mb-2 text-black">Your Resume:</h2>
-              <a
-                href={resumeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-              >
-                View or Download Resume
-              </a>
-            </div>
-          )}
         </div>
       </div>
     </div>
