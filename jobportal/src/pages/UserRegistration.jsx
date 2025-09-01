@@ -13,7 +13,7 @@ const UserRegistration = () => {
   return (
     <div
       style={{
-        minHeight: "100vh",
+       
         background: "radial-gradient(circle at top left,  #000c28, #1a006f, #3f0071, #0a1e55 )",
         display: "flex",
         flexDirection: "column",
