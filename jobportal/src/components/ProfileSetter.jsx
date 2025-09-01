@@ -177,9 +177,9 @@ const ProfileSetter = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white p-6">
-      <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg">
+      <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg">
         <div className="p-8">
-          <h1 className="text-3xl font-bold text-center mb-6 text-black">Update Your Profile</h1>
+          <h1 className="text-3xl font-bold text-center mb-6">Update Your Profile</h1>
           {profilePreview && (
             <div className="flex justify-center mb-6">
               <img
@@ -197,17 +197,18 @@ const ProfileSetter = () => {
                 value={formData.firstName}
                 onChange={handleInputChange}
                 placeholder="First Name"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleInputChange}
                 placeholder="Last Name"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
 
+            {/* More fields… */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 name="age"
@@ -215,74 +216,77 @@ const ProfileSetter = () => {
                 value={formData.age}
                 onChange={handleInputChange}
                 placeholder="Age"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
                 min={0}
               />
               <select
                 name="gender"
                 value={formData.gender}
                 onChange={handleInputChange}
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               >
-                <option value="" className="text-black">Select Gender</option>
-                <option value="male" className="text-black">Male</option>
-                <option value="female" className="text-black">Female</option>
+                <option value="">Select Gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
               </select>
             </div>
 
+            {/* Location */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <input
                 name="city"
                 value={formData.city}
                 onChange={handleInputChange}
                 placeholder="City"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
                 name="state"
                 value={formData.state}
                 onChange={handleInputChange}
                 placeholder="State"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
                 name="country"
                 value={formData.country}
                 onChange={handleInputChange}
                 placeholder="Country"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
 
+            {/* Academics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
                 name="tenthPercentage"
                 value={formData.tenthPercentage}
                 onChange={handleInputChange}
                 placeholder="10th %"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
                 name="twelfthPercentage"
                 value={formData.twelfthPercentage}
                 onChange={handleInputChange}
                 placeholder="12th %"
-                className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
 
+            {/* Undergraduate */}
             <div className="border-t pt-4">
-              <h2 className="font-semibold mb-3 text-black">Undergraduate</h2>
+              <h2 className="font-semibold mb-3">Undergraduate</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <select
                   name="undergradCourse"
                   value={formData.undergradCourse}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full text-black"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 >
                   <option value="">Degree</option>
                   {["B.Sc","B.Tech","B.E","B.Com","B.A","BCA","Other"].map(c => (
-                    <option key={c} value={c} className="text-black">{c}</option>
+                    <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
                 <input
@@ -290,30 +294,31 @@ const ProfileSetter = () => {
                   value={formData.undergradCGPA}
                   onChange={handleInputChange}
                   placeholder="CGPA"
-                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
                 <input
                   name="undergradInstitute"
                   value={formData.undergradInstitute}
                   onChange={handleInputChange}
                   placeholder="Institute"
-                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
               </div>
             </div>
 
+            {/* Postgraduate */}
             <div className="border-t pt-4">
-              <h2 className="font-semibold mb-3 text-black">Postgraduate (if any)</h2>
+              <h2 className="font-semibold mb-3">Postgraduate (if any)</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <select
                   name="postgradCourse"
                   value={formData.postgradCourse}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full text-black"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 >
                   <option value="">Degree</option>
                   {["M.Sc","M.Tech","M.E","M.Com","M.A","MCA","MBA","Other"].map(c => (
-                    <option key={c} value={c} className="text-black">{c}</option>
+                    <option key={c} value={c}>{c}</option>
                   ))}
                 </select>
                 <input
@@ -321,41 +326,40 @@ const ProfileSetter = () => {
                   value={formData.postgradCGPA}
                   onChange={handleInputChange}
                   placeholder="CGPA"
-                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
                 <input
                   name="postgradInstitute"
                   value={formData.postgradInstitute}
                   onChange={handleInputChange}
                   placeholder="Institute"
-                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
               </div>
             </div>
 
+            {/* File Uploads */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block mb-1 text-black">Profile Picture</label>
+                <label className="block mb-1">Profile Picture</label>
                 <input
-                  type="file"
-                  accept="image/*"
+                  type="file" accept="image/*"
                   onChange={handleProfileFileChange}
                   className="border border-gray-300 rounded p-2 w-full"
                   name="profilePicture"
                 />
               </div>
               <div>
-                <label className="block mb-1 text-black">Resume (PDF)</label>
+                <label className="block mb-1">Resume (PDF)</label>
                 <input
-                  type="file"
-                  accept="application/pdf"
+                  type="file" accept="application/pdf"
                   onChange={handleResumeChange}
                   className="border border-gray-300 rounded p-2 w-full"
                   name="resume"
                 />
                 {resumeFileName && (
                   <div className="flex items-center mt-2">
-                    <span className="text-black mr-2">{resumeFileName}</span>
+                    <span className="text-gray-600 mr-2">{resumeFileName}</span>
                     <button
                       type="button"
                       onClick={() => { setFormData(prev => ({...prev, resume:null})); setResumeFileName(""); }}
