@@ -121,29 +121,47 @@ const ProfileSetter = () => {
       let res;
       if (exists) {
         res = await updateUserProfile(
-          dispatch, navigate,
-          formData.firstName, formData.lastName,
+          dispatch,
+          navigate,
+          formData.firstName,
+          formData.lastName,
           formData.age ? Number(formData.age) : "",
           formData.gender === "male",
-          formData.city, formData.state, formData.country,
-          formData.tenthPercentage, formData.twelfthPercentage,
-          formData.undergradCGPA, formData.undergradInstitute,
-          formData.postgradCGPA, formData.postgradInstitute,
-          formData.undergradCourse, formData.postgradCourse,
-          formData.resume, formData.profilePicture
+          formData.city,
+          formData.state,
+          formData.country,
+          formData.tenthPercentage,
+          formData.twelfthPercentage,
+          formData.undergradCGPA,
+          formData.undergradInstitute,
+          formData.postgradCGPA,
+          formData.postgradInstitute,
+          formData.undergradCourse,
+          formData.postgradCourse,
+          formData.resume,
+          formData.profilePicture
         );
       } else {
         res = await setUserProfile(
-          dispatch, navigate,
-          formData.firstName, formData.lastName,
+          dispatch,
+          navigate,
+          formData.firstName,
+          formData.lastName,
           formData.age ? Number(formData.age) : "",
           formData.gender === "male",
-          formData.city, formData.state, formData.country,
-          formData.tenthPercentage, formData.twelfthPercentage,
-          formData.undergradCGPA, formData.undergradInstitute,
-          formData.postgradCGPA, formData.postgradInstitute,
-          formData.undergradCourse, formData.postgradCourse,
-          formData.resume, formData.profilePicture
+          formData.city,
+          formData.state,
+          formData.country,
+          formData.tenthPercentage,
+          formData.twelfthPercentage,
+          formData.undergradCGPA,
+          formData.undergradInstitute,
+          formData.postgradCGPA,
+          formData.postgradInstitute,
+          formData.undergradCourse,
+          formData.postgradCourse,
+          formData.resume,
+          formData.profilePicture
         );
       }
       console.log("save response:", res);
@@ -158,43 +176,54 @@ const ProfileSetter = () => {
   if (loading) return <LoadingScreen />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-transparent">
-      <div className="card bg-base-200 w-full max-w-3xl shadow-xl">
-        <div className="card-body p-6 bg-base-100 rounded-lg">
-          <h1 className="text-2xl font-bold text-center mb-4">Update Your Profile</h1>
+    <div className="min-h-screen flex items-center justify-center bg-white p-6">
+      <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg">
+        <div className="p-8">
+          <h1 className="text-3xl font-bold text-center mb-6">Update Your Profile</h1>
           {profilePreview && (
             <div className="flex justify-center mb-6">
               <img
                 src={profilePreview}
                 alt="Profile"
-                className="w-24 h-24 rounded-full border-2 border-primary"
+                className="w-28 h-28 rounded-full border-4 border-gray-200"
               />
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Personal Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
-                name="firstName" value={formData.firstName}
+                name="firstName"
+                value={formData.firstName}
                 onChange={handleInputChange}
                 placeholder="First Name"
-                className="input input-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
-                name="lastName" value={formData.lastName}
+                name="lastName"
+                value={formData.lastName}
                 onChange={handleInputChange}
                 placeholder="Last Name"
-                className="input input-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
+            </div>
+
+            {/* More fields… */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
-                name="age" type="number" value={formData.age}
+                name="age"
+                type="number"
+                value={formData.age}
                 onChange={handleInputChange}
-                placeholder="Age" min={0}
-                className="input input-bordered w-full"
+                placeholder="Age"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
+                min={0}
               />
               <select
-                name="gender" value={formData.gender}
+                name="gender"
+                value={formData.gender}
                 onChange={handleInputChange}
-                className="select select-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               >
                 <option value="">Select Gender</option>
                 <option value="male">Male</option>
@@ -202,49 +231,58 @@ const ProfileSetter = () => {
               </select>
             </div>
 
+            {/* Location */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <input
-                name="city" value={formData.city}
+                name="city"
+                value={formData.city}
                 onChange={handleInputChange}
                 placeholder="City"
-                className="input input-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
-                name="state" value={formData.state}
+                name="state"
+                value={formData.state}
                 onChange={handleInputChange}
                 placeholder="State"
-                className="input input-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
-                name="country" value={formData.country}
+                name="country"
+                value={formData.country}
                 onChange={handleInputChange}
                 placeholder="Country"
-                className="input input-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
 
+            {/* Academics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <input
-                name="tenthPercentage" value={formData.tenthPercentage}
+                name="tenthPercentage"
+                value={formData.tenthPercentage}
                 onChange={handleInputChange}
                 placeholder="10th %"
-                className="input input-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
               <input
-                name="twelfthPercentage" value={formData.twelfthPercentage}
+                name="twelfthPercentage"
+                value={formData.twelfthPercentage}
                 onChange={handleInputChange}
                 placeholder="12th %"
-                className="input input-bordered w-full"
+                className="border border-gray-300 rounded px-4 py-2 w-full"
               />
             </div>
 
-            <div className="border p-4 rounded-md">
-              <h2 className="font-semibold mb-2">Undergraduate</h2>
+            {/* Undergraduate */}
+            <div className="border-t pt-4">
+              <h2 className="font-semibold mb-3">Undergraduate</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <select
-                  name="undergradCourse" value={formData.undergradCourse}
+                  name="undergradCourse"
+                  value={formData.undergradCourse}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 >
                   <option value="">Degree</option>
                   {["B.Sc","B.Tech","B.E","B.Com","B.A","BCA","Other"].map(c => (
@@ -252,27 +290,31 @@ const ProfileSetter = () => {
                   ))}
                 </select>
                 <input
-                  name="undergradCGPA" value={formData.undergradCGPA}
+                  name="undergradCGPA"
+                  value={formData.undergradCGPA}
                   onChange={handleInputChange}
                   placeholder="CGPA"
-                  className="input input-bordered w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
                 <input
-                  name="undergradInstitute" value={formData.undergradInstitute}
+                  name="undergradInstitute"
+                  value={formData.undergradInstitute}
                   onChange={handleInputChange}
                   placeholder="Institute"
-                  className="input input-bordered w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
               </div>
             </div>
 
-            <div className="border p-4 rounded-md">
-              <h2 className="font-semibold mb-2">Postgraduate (if any)</h2>
+            {/* Postgraduate */}
+            <div className="border-t pt-4">
+              <h2 className="font-semibold mb-3">Postgraduate (if any)</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <select
-                  name="postgradCourse" value={formData.postgradCourse}
+                  name="postgradCourse"
+                  value={formData.postgradCourse}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 >
                   <option value="">Degree</option>
                   {["M.Sc","M.Tech","M.E","M.Com","M.A","MCA","MBA","Other"].map(c => (
@@ -280,48 +322,62 @@ const ProfileSetter = () => {
                   ))}
                 </select>
                 <input
-                  name="postgradCGPA" value={formData.postgradCGPA}
+                  name="postgradCGPA"
+                  value={formData.postgradCGPA}
                   onChange={handleInputChange}
                   placeholder="CGPA"
-                  className="input input-bordered w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
                 <input
-                  name="postgradInstitute" value={formData.postgradInstitute}
+                  name="postgradInstitute"
+                  value={formData.postgradInstitute}
                   onChange={handleInputChange}
                   placeholder="Institute"
-                  className="input input-bordered w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full"
                 />
               </div>
             </div>
 
+            {/* File Uploads */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="label">Profile Picture</label>
+                <label className="block mb-1">Profile Picture</label>
                 <input
                   type="file" accept="image/*"
                   onChange={handleProfileFileChange}
-                  className="file-input file-input-bordered w-full"
+                  className="border border-gray-300 rounded p-2 w-full"
                   name="profilePicture"
                 />
               </div>
               <div>
-                <label className="label">Resume (PDF)</label>
+                <label className="block mb-1">Resume (PDF)</label>
                 <input
                   type="file" accept="application/pdf"
                   onChange={handleResumeChange}
-                  className="file-input file-input-bordered w-full"
+                  className="border border-gray-300 rounded p-2 w-full"
                   name="resume"
                 />
                 {resumeFileName && (
                   <div className="flex items-center mt-2">
-                    <span className="badge badge-outline mr-2">{resumeFileName.split('.').pop().toUpperCase()}</span>
-                    <button type="button" onClick={() => { setFormData(prev => ({...prev, resume:null})); setResumeFileName(""); }} className="btn btn-sm btn-ghost">Remove</button>
+                    <span className="text-gray-600 mr-2">{resumeFileName}</span>
+                    <button
+                      type="button"
+                      onClick={() => { setFormData(prev => ({...prev, resume:null})); setResumeFileName(""); }}
+                      className="text-red-500"
+                    >
+                      Remove
+                    </button>
                   </div>
                 )}
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary w-full">Save Profile</button>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white rounded px-4 py-2 mt-4 hover:bg-blue-700"
+            >
+              Save Profile
+            </button>
           </form>
         </div>
       </div>
