@@ -5,7 +5,7 @@ import { getUser, setUserProfile, updateUserProfile } from "../services/apicalls
 import { toast } from "react-hot-toast";
 import { setRole, setUserData, setUserId } from "../redux/slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
-
+import { DocumentIcon, PhotographIcon, XCircleIcon } from "@heroicons/react/outline";
 const ProfileSetter = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -398,49 +398,65 @@ const ProfileSetter = () => {
             </div>
 
             {/* File Uploads */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="profilePicture" className="block mb-1 text-black">Profile Picture</label>
-                <input
-                  id="profilePicture"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfileFileChange}
-                  className="border border-gray-300 rounded p-2 w-full text-black"
-                  name="profilePicture"
-                />
-              </div>
-              <div>
-                <label htmlFor="resume" className="block mb-1 text-black">Resume (PDF)</label>
-                <input
-                  id="resume"
-                  type="file"
-                  accept="application/pdf"
-                  onChange={handleResumeChange}
-                  className="border border-gray-300 rounded p-2 w-full text-black"
-                  name="resume"
-                />
-                {resumeFileName && (
-                  <div className="flex items-center mt-2">
-                    <span className="text-gray-600 mr-2">{resumeFileName}</span>
-                    <button
-                      type="button"
-                      onClick={() => { setFormData(prev => ({...prev, resume:null})); setResumeFileName(""); }}
-                      className="text-red-500"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+  {/* Profile Picture Card */}
+  <div className="relative flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors">
+    <PhotographIcon className="h-12 w-12 text-gray-400 mb-2" />
+    <label htmlFor="profilePicture" className="cursor-pointer text-gray-700 font-medium">
+      Click to upload profile picture
+    </label>
+    <input
+      id="profilePicture"
+      type="file"
+      accept="image/*"
+      onChange={handleProfileFileChange}
+      className="absolute inset-0 opacity-0 cursor-pointer"
+      name="profilePicture"
+    />
+    {profilePreview && (
+      <img
+        src={profilePreview}
+        alt="Preview"
+        className="mt-4 h-20 w-20 rounded-full object-cover border border-gray-200"
+      />
+    )}
+  </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-600 text-white rounded px-4 py-2 mt-4 hover:bg-blue-700"
-            >
-              Save Profile
-            </button>
+  {/* Resume Card */}
+  <div className="relative flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors">
+    <DocumentIcon className="h-12 w-12 text-gray-400 mb-2" />
+    <label htmlFor="resume" className="cursor-pointer text-gray-700 font-medium">
+      Click to upload resume (PDF)
+    </label>
+    <input
+      id="resume"
+      type="file"
+      accept="application/pdf"
+      onChange={handleResumeChange}
+      className="absolute inset-0 opacity-0 cursor-pointer"
+      name="resume"
+    />
+    {resumeFileName && (
+      <div className="mt-4 flex items-center space-x-2">
+        <span className="text-gray-600">{resumeFileName}</span>
+        <button
+          type="button"
+          onClick={() => { setFormData(prev => ({ ...prev, resume: null })); setResumeFileName(""); }}
+          className="p-1 text-red-500 hover:text-red-700"
+        >
+          <XCircleIcon className="h-5 w-5" />
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
+<button
+  type="submit"
+  className="mt-8 w-full flex justify-center items-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg px-6 py-3 hover:from-blue-700 hover:to-indigo-700 transition"
+>
+  Save Profile
+</button>
           </form>
         </div>
       </div>
