@@ -178,7 +178,7 @@ const ProfileSetter = () => {
     <div className="min-h-screen flex items-center justify-center bg-white p-6">
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg">
         <div className="p-8">
-          <h1 className="text-3xl font-bold text-center mb-6">Update Your Profile</h1>
+          <h1 className="text-3xl font-bold text-center mb-6 text-black">Update Your Profile</h1>
           {profilePreview && (
             <div className="flex justify-center mb-6">
               <img
@@ -192,51 +192,54 @@ const ProfileSetter = () => {
             {/* Personal Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="firstName" className="block mb-1 text-gray-700">First Name</label>
+                <label htmlFor="firstName" className="block mb-1 text-black">First Name</label>
                 <input
                   id="firstName"
                   name="firstName"
                   value={formData.firstName}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="First Name"
                 />
               </div>
               <div>
-                <label htmlFor="lastName" className="block mb-1 text-gray-700">Last Name</label>
+                <label htmlFor="lastName" className="block mb-1 text-black">Last Name</label>
                 <input
                   id="lastName"
                   name="lastName"
                   value={formData.lastName}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="Last Name"
                 />
               </div>
             </div>
 
-            {/* More fields… */}
+            {/* Age & Gender */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="age" className="block mb-1 text-gray-700">Age</label>
+                <label htmlFor="age" className="block mb-1 text-black">Age</label>
                 <input
                   id="age"
                   name="age"
                   type="number"
                   value={formData.age}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="Age"
                   min={0}
                 />
               </div>
               <div>
-                <label htmlFor="gender" className="block mb-1 text-gray-700">Gender</label>
+                <label htmlFor="gender" className="block mb-1 text-black">Gender</label>
                 <select
                   id="gender"
                   name="gender"
                   value={formData.gender}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black"
                 >
-                  <option value="">Select Gender</option>
+                  <option value="" className="text-black">Select Gender</option>
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
@@ -246,33 +249,36 @@ const ProfileSetter = () => {
             {/* Location */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="city" className="block mb-1 text-gray-700">City</label>
+                <label htmlFor="city" className="block mb-1 text-black">City</label>
                 <input
                   id="city"
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="City"
                 />
               </div>
               <div>
-                <label htmlFor="state" className="block mb-1 text-gray-700">State</label>
+                <label htmlFor="state" className="block mb-1 text-black">State</label>
                 <input
                   id="state"
                   name="state"
                   value={formData.state}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="State"
                 />
               </div>
               <div>
-                <label htmlFor="country" className="block mb-1 text-gray-700">Country</label>
+                <label htmlFor="country" className="block mb-1 text-black">Country</label>
                 <input
                   id="country"
                   name="country"
                   value={formData.country}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="Country"
                 />
               </div>
             </div>
@@ -280,64 +286,68 @@ const ProfileSetter = () => {
             {/* Academics */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="tenthPercentage" className="block mb-1 text-gray-700">10th %</label>
+                <label htmlFor="tenthPercentage" className="block mb-1 text-black">10th %</label>
                 <input
                   id="tenthPercentage"
                   name="tenthPercentage"
                   value={formData.tenthPercentage}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="10th %"
                 />
               </div>
               <div>
-                <label htmlFor="twelfthPercentage" className="block mb-1 text-gray-700">12th %</label>
+                <label htmlFor="twelfthPercentage" className="block mb-1 text-black">12th %</label>
                 <input
                   id="twelfthPercentage"
                   name="twelfthPercentage"
                   value={formData.twelfthPercentage}
                   onChange={handleInputChange}
-                  className="border border-gray-300 rounded px-4 py-2 w-full"
+                  className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                  placeholder="12th %"
                 />
               </div>
             </div>
 
             {/* Undergraduate */}
             <div className="border-t pt-4">
-              <h2 className="font-semibold mb-3">Undergraduate</h2>
+              <h2 className="font-semibold mb-3 text-black">Undergraduate</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label htmlFor="undergradCourse" className="block mb-1 text-gray-700">Degree</label>
+                  <label htmlFor="undergradCourse" className="block mb-1 text-black">Degree</label>
                   <select
                     id="undergradCourse"
                     name="undergradCourse"
                     value={formData.undergradCourse}
                     onChange={handleInputChange}
-                    className="border border-gray-300 rounded px-4 py-2 w-full"
+                    className="border border-gray-300 rounded px-4 py-2 w-full text-black"
                   >
-                    <option value="">Degree</option>
+                    <option value="" className="text-black">Degree</option>
                     {["B.Sc","B.Tech","B.E","B.Com","B.A","BCA","Other"].map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="undergradCGPA" className="block mb-1 text-gray-700">CGPA</label>
+                  <label htmlFor="undergradCGPA" className="block mb-1 text-black">CGPA</label>
                   <input
                     id="undergradCGPA"
                     name="undergradCGPA"
                     value={formData.undergradCGPA}
                     onChange={handleInputChange}
-                    className="border border-gray-300 rounded px-4 py-2 w-full"
+                    className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                    placeholder="CGPA"
                   />
                 </div>
                 <div>
-                  <label htmlFor="undergradInstitute" className="block mb-1 text-gray-700">Institute</label>
+                  <label htmlFor="undergradInstitute" className="block mb-1 text-black">Institute</label>
                   <input
                     id="undergradInstitute"
                     name="undergradInstitute"
                     value={formData.undergradInstitute}
                     onChange={handleInputChange}
-                    className="border border-gray-300 rounded px-4 py-2 w-full"
+                    className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                    placeholder="Institute"
                   />
                 </div>
               </div>
@@ -345,41 +355,43 @@ const ProfileSetter = () => {
 
             {/* Postgraduate */}
             <div className="border-t pt-4">
-              <h2 className="font-semibold mb-3">Postgraduate (if any)</h2>
+              <h2 className="font-semibold mb-3 text-black">Postgraduate (if any)</h2>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label htmlFor="postgradCourse" className="block mb-1 text-gray-700">Degree</label>
+                  <label htmlFor="postgradCourse" className="block mb-1 text-black">Degree</label>
                   <select
                     id="postgradCourse"
                     name="postgradCourse"
                     value={formData.postgradCourse}
                     onChange={handleInputChange}
-                    className="border border-gray-300 rounded px-4 py-2 w-full"
+                    className="border border-gray-300 rounded px-4 py-2 w-full text-black"
                   >
-                    <option value="">Degree</option>
+                    <option value="" className="text-black">Degree</option>
                     {["M.Sc","M.Tech","M.E","M.Com","M.A","MCA","MBA","Other"].map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="postgradCGPA" className="block mb-1 text-gray-700">CGPA</label>
+                  <label htmlFor="postgradCGPA" className="block mb-1 text-black">CGPA</label>
                   <input
                     id="postgradCGPA"
                     name="postgradCGPA"
                     value={formData.postgradCGPA}
                     onChange={handleInputChange}
-                    className="border border-gray-300 rounded px-4 py-2 w-full"
+                    className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                    placeholder="CGPA"
                   />
                 </div>
                 <div>
-                  <label htmlFor="postgradInstitute" className="block mb-1 text-gray-700">Institute</label>
+                  <label htmlFor="postgradInstitute" className="block mb-1 text-black">Institute</label>
                   <input
                     id="postgradInstitute"
                     name="postgradInstitute"
                     value={formData.postgradInstitute}
                     onChange={handleInputChange}
-                    className="border border-gray-300 rounded px-4 py-2 w-full"
+                    className="border border-gray-300 rounded px-4 py-2 w-full text-black placeholder-black"
+                    placeholder="Institute"
                   />
                 </div>
               </div>
@@ -388,24 +400,24 @@ const ProfileSetter = () => {
             {/* File Uploads */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="profilePicture" className="block mb-1 text-gray-700">Profile Picture</label>
+                <label htmlFor="profilePicture" className="block mb-1 text-black">Profile Picture</label>
                 <input
                   id="profilePicture"
                   type="file"
                   accept="image/*"
                   onChange={handleProfileFileChange}
-                  className="border border-gray-300 rounded p-2 w-full"
+                  className="border border-gray-300 rounded p-2 w-full text-black"
                   name="profilePicture"
                 />
               </div>
               <div>
-                <label htmlFor="resume" className="block mb-1 text-gray-700">Resume (PDF)</label>
+                <label htmlFor="resume" className="block mb-1 text-black">Resume (PDF)</label>
                 <input
                   id="resume"
                   type="file"
                   accept="application/pdf"
                   onChange={handleResumeChange}
-                  className="border border-gray-300 rounded p-2 w-full"
+                  className="border border-gray-300 rounded p-2 w-full text-black"
                   name="resume"
                 />
                 {resumeFileName && (
