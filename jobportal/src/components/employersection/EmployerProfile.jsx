@@ -76,7 +76,7 @@ export default function EmployerProfileForm() {
   };
 
   return (
-    <div className="min-h-screen w-4xl mx-auto flex items-center justify-center p-8">
+    <div className="min-h-screen w-[920px] mx-auto flex items-center justify-center p-8">
       <form
         className="w-full  bg-white ml-20 rounded-2xl shadow-2xl p-10 space-y-7 border border-gray-100"
         onSubmit={handleSubmit}
