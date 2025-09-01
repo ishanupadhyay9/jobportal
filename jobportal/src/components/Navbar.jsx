@@ -65,7 +65,7 @@ export default function Navbar() {
           {token ? (
             <>
               <Link
-                to={role === "user" ? "/user-personal-tab" : "/employer-personal-tab"}
+                to={isEmployer ? "/employer-personal-tab" : "/user-personal-tab"}
                 className="px-4 py-2 rounded-md border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition"
               >
                 Profile
