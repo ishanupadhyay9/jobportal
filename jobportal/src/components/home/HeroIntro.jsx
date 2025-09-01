@@ -1,7 +1,9 @@
 import React from 'react';
 import { FaUserTie, FaUser, FaSignInAlt, FaRocket, FaMagic, FaHandshake } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 const HeroIntro = () => {
+  const userId = useSelector((state)=>state.auth.userId);
   return (
     <section
       className="relative flex flex-col items-center justify-center text-center py-32 px-6 overflow-hidden"
@@ -43,8 +45,10 @@ const HeroIntro = () => {
             </div>
           ))}
         </div>
-
-        {/* Signup Buttons */}
+{
+  (userId)?<div></div>:
+  <div>
+      {/* Signup Buttons */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-8">
           <Link to={"/employer-signup"}><button className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg transform hover:scale-105 transition">
             <FaUserTie /> Employer Sign Up
@@ -68,6 +72,9 @@ const HeroIntro = () => {
           
           
         </div>
+  </div>
+}
+      
       </div>
 
       {/* Custom Animations */}
