@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaSearch, FaBriefcase, FaStar, FaRocket } from 'react-icons/fa';
+import { Link } from 'react-router';
 
 const JobsIntroSection = () => {
   return (
@@ -97,7 +98,7 @@ const JobsIntroSection = () => {
 
         {/* Enhanced Search Button */}
         <div className="relative">
-          <button className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 via-cyan-600 to-indigo-600 hover:from-blue-500 hover:via-cyan-500 hover:to-indigo-500 text-white font-bold px-12 py-4 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300 text-lg overflow-hidden">
+         <Link to={'/search-jobs'}> <button className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 via-cyan-600 to-indigo-600 hover:from-blue-500 hover:via-cyan-500 hover:to-indigo-500 text-white font-bold px-12 py-4 rounded-full shadow-2xl transform hover:scale-105 transition-all duration-300 text-lg overflow-hidden">
             {/* Button Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-cyan-400/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300"></div>
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -108,7 +109,7 @@ const JobsIntroSection = () => {
             
             {/* Sparkle Effect */}
             <div className="absolute top-1 right-4 w-2 h-2 bg-white rounded-full opacity-0 group-hover:opacity-100 animate-ping"></div>
-          </button>
+          </button></Link>
           
           {/* Button Shadow */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/50 to-cyan-600/50 rounded-full blur-lg transform translate-y-2 -z-10"></div>
