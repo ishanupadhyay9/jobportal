@@ -1,20 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getUser, setUserProfile } from "../services/apicalls/authApi"; // adjust path if needed
 import { toast } from "react-hot-toast";
-import { useEffect } from "react";
 import { setRole, setUserData, setUserId } from "../redux/slices/authSlice";
+import LoadingScreen from "./LoadingScreen"; // Adjust path if needed
+
 const ProfileSetter = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [loading, setLoading] = useState(true); // Loading state
+
   const [formData, setFormData] = useState({
-    profilePicture: null,         // will be sent as imageFile
+    profilePicture: null, // will be sent as imageFile
     firstName: "",
     lastName: "",
     age: "",
-    gender: "",                   // 'male' / 'female' / 'other'
+    gender: "", // 'male' / 'female' / 'other'
     city: "",
     state: "",
     country: "",
@@ -26,53 +29,56 @@ const ProfileSetter = () => {
     postgradCourse: "",
     postgradCGPA: "",
     postgradInstitute: "",
-    resume: null                  // will be sent as pdfFile
+    resume: null, // will be sent as pdfFile
   });
-  const token2 = useSelector((state)=>state.auth.token);
+  const token2 = useSelector((state) => state.auth.token);
   const [profilePreview, setProfilePreview] = useState(null);
   const [resumeFileName, setResumeFileName] = useState("");
 
-      useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const res = await getUser(dispatch,token2);
-            console.log(res.data);
-            dispatch(setUserData(res.data));
-            dispatch(setUserId(res.data.user_id));
-            dispatch(setRole("user"));
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const res = await getUser(dispatch, token2);
+        console.log(res.data);
+        dispatch(setUserData(res.data));
+        dispatch(setUserId(res.data.user_id));
+        dispatch(setRole("user"));
 
-            const data = res.data;
+        const data = res.data;
 
-setFormData({
-  profilePicture: data.user_avatar_link,
-  firstName: data.firstname,
-  lastName: data.lastname,
-  age: data.age,
-  gender: data.male === true ? "male" : data.male === false ? "female" : "",
+        setFormData({
+          profilePicture: data.user_avatar_link,
+          firstName: data.firstname,
+          lastName: data.lastname,
+          age: data.age,
+          gender: data.male === true ? "male" : data.male === false ? "female" : "",
 
-  city: data.city,
-  state: data.state,
-  country: data.country,
+          city: data.city,
+          state: data.state,
+          country: data.country,
 
-  tenthPercentage: data["10th_percentage"],
-  twelfthPercentage: data["12_percentage"],
+          tenthPercentage: data["10th_percentage"],
+          twelfthPercentage: data["12_percentage"],
 
-  undergradCourse: data.undergrad_degree,
-  undergradCGPA: data.undergrad_cgpa,
-  undergradInstitute: data.undergrad_institute,
+          undergradCourse: data.undergrad_degree,
+          undergradCGPA: data.undergrad_cgpa,
+          undergradInstitute: data.undergrad_institute,
 
-  postgradCourse: data.postgrad_degree,
-  postgradCGPA: data.postgrad_cgpa,
-  postgradInstitute: data.postgrad_institute,
+          postgradCourse: data.postgrad_degree,
+          postgradCGPA: data.postgrad_cgpa,
+          postgradInstitute: data.postgrad_institute,
 
-  resume: data.resume_link
-});
-          } catch (error) {
-            console.error("Error fetching employer:", error);
-          }
-        };
-        fetchData();
-      }, [token2]);
+          resume: data.resume_link,
+        });
+      } catch (error) {
+        console.error("Error fetching employer:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [token2]);
 
   const undergraduateCourses = [
     "B.Sc",
@@ -81,7 +87,7 @@ setFormData({
     "B.Com",
     "B.A",
     "BCA",
-    "Other"
+    "Other",
   ];
 
   const postgraduateCourses = [
@@ -92,23 +98,23 @@ setFormData({
     "M.A",
     "MCA",
     "MBA",
-    "Other"
+    "Other",
   ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleProfileFileChange = (e) => {
     const file = e.target.files?.[0] || null;
     if (file) {
-      setFormData(prev => ({ ...prev, profilePicture: file }));
+      setFormData((prev) => ({ ...prev, profilePicture: file }));
       const reader = new FileReader();
       reader.onload = (ev) => setProfilePreview(ev.target.result);
       reader.readAsDataURL(file);
     } else {
-      setFormData(prev => ({ ...prev, profilePicture: null }));
+      setFormData((prev) => ({ ...prev, profilePicture: null }));
       setProfilePreview(null);
     }
   };
@@ -116,22 +122,21 @@ setFormData({
   const handleResumeChange = (e) => {
     const file = e.target.files?.[0] || null;
     if (file) {
-      // Ensure only PDF is used (backend requires pdf)
       if (file.type !== "application/pdf") {
         toast.error("Please upload a PDF resume.");
         e.target.value = "";
         return;
       }
-      setFormData(prev => ({ ...prev, resume: file }));
+      setFormData((prev) => ({ ...prev, resume: file }));
       setResumeFileName(file.name);
     } else {
-      setFormData(prev => ({ ...prev, resume: null }));
+      setFormData((prev) => ({ ...prev, resume: null }));
       setResumeFileName("");
     }
   };
 
   const removeResume = () => {
-    setFormData(prev => ({ ...prev, resume: null }));
+    setFormData((prev) => ({ ...prev, resume: null }));
     setResumeFileName("");
     const fileInput = document.querySelector('input[name="resume"]');
     if (fileInput) fileInput.value = "";
@@ -148,7 +153,6 @@ setFormData({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic required checks similar to backend expectation
     if (!formData.firstName || !formData.lastName) {
       toast.error("Please enter your first and last name.");
       return;
@@ -164,8 +168,8 @@ setFormData({
         navigate,
         formData.firstName,
         formData.lastName,
-        formData.age ? Number(formData.age) : "", // age as number if present
-        (formData.gender.toLowerCase() === "male"), // male boolean
+        formData.age ? Number(formData.age) : "",
+        formData.gender.toLowerCase() === "male",
         formData.city,
         formData.state,
         formData.country,
@@ -177,16 +181,18 @@ setFormData({
         formData.postgradInstitute,
         formData.undergradCourse,
         formData.postgradCourse,
-        formData.resume,          // pdfFile
-        formData.profilePicture   // imageFile (optional)
+        formData.resume,
+        formData.profilePicture
       );
-      // setUserProfile handles toasts/navigation on success. If it returns something falsy, show generic toast (defensive).
-      // (No extra actions here to avoid duplicating navigation/toasts.)
     } catch (err) {
       console.error("Error submitting profile:", err);
       toast.error("Failed to save profile.");
     }
   };
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div>
@@ -357,7 +363,9 @@ setFormData({
                       >
                         <option value="">Select degree</option>
                         {undergraduateCourses.map((c) => (
-                          <option value={c} key={c}>{c}</option>
+                          <option value={c} key={c}>
+                            {c}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -408,7 +416,9 @@ setFormData({
                       >
                         <option value="">Select degree</option>
                         {postgraduateCourses.map((c) => (
-                          <option value={c} key={c}>{c}</option>
+                          <option value={c} key={c}>
+                            {c}
+                          </option>
                         ))}
                       </select>
                     </div>
