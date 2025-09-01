@@ -1,37 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { FaSearch, FaBriefcase, FaStar, FaRocket } from 'react-icons/fa';
-import ApplyCards from '../components/ApplyCards'; // Changed from JobCard to ApplyCards
+import { useSelector } from 'react-redux';
+import { searchJobsByTitle } from '../services/apicalls/jobApi'; // Adjust path as needed
+import ApplyCards from '../components/ApplyCards';
 import Navbar from '../components/Navbar';
-
-const sampleJobs = [
-  { id: 1, companyName: "Google", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg", jobTitle: "Senior Frontend Developer", lastDate: "2025-09-15" },
-  { id: 2, companyName: "Microsoft", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg", jobTitle: "Cloud Solutions Architect", lastDate: "2025-09-20" },
-  { id: 3, companyName: "Apple", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", jobTitle: "iOS App Developer", lastDate: "2025-09-18" },
-  { id: 4, companyName: "Netflix", companyLogo: "https://logoeps.com/wp-content/uploads/2013/03/netflix-vector-logo.png", jobTitle: "Data Scientist", lastDate: "2025-09-25" },
-  { id: 5, companyName: "Tesla", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/b/bb/Tesla_T_symbol.svg", jobTitle: "Software Engineer - Autopilot", lastDate: "2025-09-22" },
-  { id: 6, companyName: "Meta", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg", jobTitle: "Product Manager", lastDate: "2025-09-28" },
-  { id: 7, companyName: "Amazon", companyLogo: "https://logoeps.com/wp-content/uploads/2012/09/amazon-vector-logo.png", jobTitle: "DevOps Engineer", lastDate: "2025-09-30" },
-  { id: 8, companyName: "Spotify", companyLogo: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg", jobTitle: "Backend Developer", lastDate: "2025-10-02" }
-];
+import { toast } from 'react-hot-toast';
 
 const SearchJobs = () => {
   const [query, setQuery] = useState('');
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [animate, setAnimate] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
+  
+  // Get token from Redux store or localStorage as fallback
+  const reduxToken = useSelector((state) => state.auth.token);
+  const localStorageToken = localStorage.getItem('token');
+  const token = reduxToken || localStorageToken;
 
   useEffect(() => {
     setAnimate(true);
   }, []);
 
-  const filtered = sampleJobs.filter(job =>
-    job.jobTitle.toLowerCase().includes(query.toLowerCase()) ||
-    job.companyName.toLowerCase().includes(query.toLowerCase())
-  );
+  const handleSearch = async () => {
+    if (!query.trim()) {
+      toast.error('Please enter a search term');
+      return;
+    }
+
+    if (!token) {
+      toast.error('Please login to search jobs');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await searchJobsByTitle(query, token);
+      
+      if (response.success) {
+        setJobs(response.data);
+        setHasSearched(true);
+        toast.success(`Found ${response.data.length} jobs`);
+      } else {
+        toast.error(response.message || 'Error searching jobs');
+        setJobs([]);
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      toast.error('Network error occurred');
+      setJobs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
 
   return (
     <div>
       <Navbar/>
       <section
-        className="relative py-20 px-6 overflow-hidden"
+        className="relative py-20 px-6 overflow-hidden min-h-screen"
         style={{
           background: 'linear-gradient(135deg, #0a0f23 0%, #1b2333 60%, #0a0f23 100%)'
         }}
@@ -50,40 +83,92 @@ const SearchJobs = () => {
         <div className="relative z-10 max-w-5xl mx-auto">
           {/* Search Bar */}
           <div className="flex justify-center mb-12">
-            <div className="relative w-full max-w-md">
-              <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
-              <input
-                type="text"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                placeholder="Search jobs or companies..."
-                className="w-full pl-12 pr-4 py-3 rounded-full bg-gray-100 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
-              />
+            <div className="relative w-full max-w-2xl flex gap-4">
+              <div className="relative flex-1">
+                <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                <input
+                  type="text"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Search jobs by title or keywords..."
+                  className="w-full pl-12 pr-4 py-3 rounded-full bg-gray-100 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 transition"
+                />
+              </div>
+              <button
+                onClick={handleSearch}
+                disabled={loading}
+                className={`px-6 py-3 rounded-full font-semibold text-white transition-colors ${
+                  loading 
+                    ? 'bg-gray-500 cursor-not-allowed' 
+                    : 'bg-cyan-600 hover:bg-cyan-700'
+                }`}
+              >
+                {loading ? 'Searching...' : 'Search'}
+              </button>
             </div>
           </div>
 
+          {/* Loading State */}
+          {loading && (
+            <div className="flex justify-center mb-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
+            </div>
+          )}
+
+          {/* Results Count */}
+          {hasSearched && !loading && (
+            <div className="text-center mb-6">
+              <p className="text-gray-300 text-lg">
+                {jobs.length > 0 
+                  ? `Found ${jobs.length} jobs for "${query}"` 
+                  : `No jobs found for "${query}". Try different keywords.`
+                }
+              </p>
+            </div>
+          )}
+
           {/* Results Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.length ? filtered.map((job, idx) => (
+            {jobs.length > 0 ? jobs.map((job, idx) => (
               <div
-                key={job.id}
+                key={job.job_id}
                 className={`transform transition-all duration-700 ${
                   animate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}
                 style={{ transitionDelay: `${idx * 100}ms` }}
               >
                 <ApplyCards
-                  jobId={job.id}
-                  companyName={job.companyName}
-                  companyLogo={job.companyLogo}
-                  jobTitle={job.jobTitle}
-                  description={`Apply here to be a ${job.jobTitle} at ${job.companyName}. Application deadline: ${job.lastDate}`}
-                  buttonText="See Status"
+                  jobId={job.job_id}
+                  companyName={job.company_name || "Company"} // Adjust field names as per your API response
+                  companyLogo={job.org_avatar}
+                  jobTitle={job.title}
+                  description={job.body}
+                  buttonText="Apply Now"
+                  rank={job.rank} // Show search relevance rank if needed
                 />
               </div>
-            )) : (
-              <p className="text-center text-gray-400 col-span-full">No jobs found.</p>
-            )}
+            )) : hasSearched && !loading ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-20">
+                <FaSearch className="text-6xl text-gray-400 mb-4" />
+                <p className="text-center text-gray-400 text-xl">
+                  No jobs found for "{query}"
+                </p>
+                <p className="text-center text-gray-500 mt-2">
+                  Try searching with different keywords or job titles
+                </p>
+              </div>
+            ) : !hasSearched ? (
+              <div className="col-span-full flex flex-col items-center justify-center py-20">
+                <FaBriefcase className="text-6xl text-gray-400 mb-4" />
+                <p className="text-center text-gray-400 text-xl">
+                  Search for your dream job
+                </p>
+                <p className="text-center text-gray-500 mt-2">
+                  Enter keywords or job titles to find relevant opportunities
+                </p>
+              </div>
+            ) : null}
           </div>
         </div>
 

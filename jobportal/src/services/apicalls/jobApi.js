@@ -7,7 +7,9 @@ const {CREATE_JOB_API,
      GET_ALL_JOBS_API,
      GET_EMPLOYER_JOBS_API,
      GET_JOB_DETAILS,
-     GET_USER_JOBS_API, APPLY_JOB_API
+     GET_USER_JOBS_API,
+      APPLY_JOB_API,
+      SEARCH_JOB_API
  }= jobEndPoints;
 
 export async function createJob(
@@ -237,6 +239,30 @@ export async function applyToJob(jobId, token) {
     return {
       success: false,
       message: error.response?.data?.message || "Error applying to job",
+      error: error.response?.data || error.message
+    };
+  }
+}
+
+export async function searchJobsByTitle(title, token) {
+  console.log("the token is", token);
+  console.log("search title is", title);
+  
+  try {
+    const response = await apiConnector("GET", `${SEARCH_JOB_API}/${encodeURIComponent(title)}`, null, {
+      Authorization: `Bearer ${token}`,
+    });
+    
+    return {
+      success: true,
+      data: response.data
+    };
+  } catch (error) {
+    console.error("Error searching jobs:", error);
+    toast.error("Error searching jobs");
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error searching jobs",
       error: error.response?.data || error.message
     };
   }
