@@ -452,7 +452,7 @@ const ProfileSetter = () => {
 
 <button
   type="submit"
-  className="mt-8 w-[60%] bg-blue-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-blue-700 transition"
+  className="mt-8 w-[60%] mx-auto bg-blue-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-blue-700 transition"
 >
   Save Profile
 </button>
