@@ -202,8 +202,8 @@ setFormData({
     {
       (loading) ? <LoadingScreen/> :
     <div>
-      <div className="min-h-screen bg-base-100 flex items-center justify-center p-4 w-[100%]">
-        <div className="card bg-white w-full shadow-xl">
+      <div className="min-h-screen bg-transparent flex items-center justify-center p-4 w-[100%]">
+        <div className="card bg-transparent w-full shadow-xl">
           <div
             className="flex card-body justify-center ml-[50px] overflow-x-scroll items-center p-6 sm:p-8 rounded-md w-[1000px]"
             data-theme={"light"}
