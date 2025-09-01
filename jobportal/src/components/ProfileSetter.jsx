@@ -5,7 +5,6 @@ import { getUser, setUserProfile, updateUserProfile } from "../services/apicalls
 import { toast } from "react-hot-toast";
 import { setRole, setUserData, setUserId } from "../redux/slices/authSlice";
 import LoadingScreen from "./LoadingScreen";
-import { DocumentIcon, PhotographIcon, XCircleIcon } from "@heroicons/react/outline";
 const ProfileSetter = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
