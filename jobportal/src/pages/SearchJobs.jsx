@@ -140,7 +140,7 @@ const SearchJobs = () => {
               >
                 <ApplyCards
                   jobId={job.job_id}
-                  companyName={job.company_name || "Company"} // Adjust field names as per your API response
+                  companyName={job.org || "Company"} // Adjust field names as per your API response
                   companyLogo={job.org_avatar}
                   jobTitle={job.title}
                   description={job.body}
