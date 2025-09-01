@@ -158,12 +158,14 @@ export default function EmployerProfileForm() {
           />
         </div>
 
-        <button
+        <div className="w-full  flex items-center justify-center">
+          <button
           type="submit"
-          className="w-[60%] mx-auto bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-semibold text-xl shadow-lg hover:shadow-xl hover:scale-[1.03] transition-transform duration-300"
+          className="w-[60%] bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-semibold text-xl shadow-lg hover:shadow-xl hover:scale-[1.03] transition-transform duration-300"
         >
-          Create Profile
+          Save Profile
         </button>
+        </div>
       </form>
     </div>
   );
