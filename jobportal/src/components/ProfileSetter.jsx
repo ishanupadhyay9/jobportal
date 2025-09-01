@@ -175,8 +175,8 @@ const ProfileSetter = () => {
   if (loading) return <LoadingScreen />;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-6">
-      <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg">
+    <div className="min-h-screen flex items-center justify-center bg-white p-8 mt-3 mx-auto">
+      <div className="w-full max-w-3xl bg-white  rounded-lg mx-auto">
         <div className="p-8">
           <h1 className="text-3xl font-bold text-center mb-6 text-black">Update Your Profile</h1>
           {profilePreview && (
