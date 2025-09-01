@@ -203,7 +203,7 @@ setFormData({
       (loading) ? <LoadingScreen/> :
     <div>
       <div className="min-h-screen bg-transparent flex items-center justify-center p-4 w-[100%]">
-        <div className="card bg-transparent w-full shadow-xl">
+        <div className="card bg-transparent w-full ">
           <div
             className="flex card-body justify-center ml-[50px] overflow-x-scroll items-center p-6 sm:p-8 rounded-md w-[1000px]"
             data-theme={"light"}
@@ -269,10 +269,8 @@ setFormData({
                       onChange={handleInputChange}
                       className="select select-bordered w-full"
                     >
-                      <option value="">Select gender</option>
                       <option value="male">Male</option>
                       <option value="female">Female</option>
-                      <option value="other">Other</option>
                     </select>
                   </div>
                 </div>
