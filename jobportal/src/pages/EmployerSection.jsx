@@ -11,7 +11,7 @@ const EmployerSection = () => {
   const [page,setpage]=useState(1);
   const token = useSelector((state)=>state.auth.token);
   return (
-  <div>
+<div className="min-h-screen bg-gradient-to-r from-blue-900 via-purple-900 to-purple-800">
     {
       token? <div className='flex flex-col'>
       

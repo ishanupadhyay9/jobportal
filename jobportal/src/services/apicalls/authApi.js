@@ -23,7 +23,8 @@ const {
   GET_USER_DETAILS_API,
   GET_EMP_DETAILS_API,
   SET_USER_DETAILS_API,
-  SET_EMP_DETAILS_API
+  SET_EMP_DETAILS_API,
+  UPDATE_EMP_DETAILS_API
 } = profileEndpoints;
 
 export async function signup(dispatch, navigate, email, user, password, confirmpassword) {
@@ -304,3 +305,90 @@ catch(error)
 {
   console.log(error);
 }}
+
+export async function updateUserProfile(
+  dispatch,
+  navigate,
+  firstname,
+  lastname,
+  age,
+  male,
+  city,
+  state,
+  country,
+  tenthPercentage,
+  twelfthPercentage,
+  undergrad_cgpa,
+  undergrad_institute,
+  postgrad_cgpa,
+  postgrad_institute,
+  undergrad_degree,
+  postgrad_degree,
+  pdfFile,   // File object (optional for updates)
+  imageFile   // File object (optional)
+) {
+  dispatch(setLoading(true));
+
+  try {
+    const formData = new FormData();
+    
+    // Only append fields that have values (avoid sending empty strings unnecessarily)
+    if (firstname) formData.append("firstname", firstname);
+    if (lastname) formData.append("lastname", lastname);
+    if (age !== undefined && age !== "") formData.append("age", age);
+    if (male !== undefined) formData.append("male", (male === true || male === "true") ? "true" : "false");
+    if (city) formData.append("city", city);
+    if (state) formData.append("state", state);
+    if (country) formData.append("country", country);
+    if (tenthPercentage) formData.append("tenthPercentage", tenthPercentage);
+    if (twelfthPercentage) formData.append("twelfthPercentage", twelfthPercentage);
+    if (undergrad_cgpa) formData.append("undergrad_cgpa", undergrad_cgpa);
+    if (undergrad_institute) formData.append("undergrad_institute", undergrad_institute);
+    if (postgrad_cgpa) formData.append("postgrad_cgpa", postgrad_cgpa);
+    if (postgrad_institute) formData.append("postgrad_institute", postgrad_institute);
+    if (undergrad_degree) formData.append("undergrad_degree", undergrad_degree);
+    if (postgrad_degree) formData.append("postgrad_degree", postgrad_degree);
+
+    // Append files only if they exist
+    if (pdfFile) formData.append("pdfFile", pdfFile);
+    if (imageFile) formData.append("imageFile", imageFile);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Authentication token not found. Please login again.");
+      dispatch(setLoading(false));
+      return;
+    }
+
+    const response = await apiConnector(
+      "PATCH",  // Using PATCH method as per your route
+      UPDATE_EMP_DETAILS_API,  // This should be UPDATE_USER_DETAILS_API, but using your existing constant
+      formData,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      }
+    );
+
+    // Backend returns 200 on success
+    if (response?.status === 200) {
+      toast.success("Profile updated successfully.");
+      dispatch(setUserData(response.data.profile)); // Update Redux store with new profile data
+      if (navigate) navigate("/"); // Optional navigation
+      return response.data;
+    } else {
+      toast.error(response?.data?.message || "Failed to update profile.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    if (error?.response?.data?.message) {
+      toast.error(error.response.data.message);
+    } else {
+      toast.error("Server error occurred while updating profile.");
+    }
+    return null;
+  } finally {
+    dispatch(setLoading(false));
+  }
+}
