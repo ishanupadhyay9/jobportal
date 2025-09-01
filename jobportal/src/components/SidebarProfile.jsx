@@ -7,7 +7,7 @@ const SidebarProfile = (props) => {
   const isregistered = useSelector((state)=>state.auth.isRegistered);
   return (
     <div>
-       <aside className="w-64 bg-gray-200 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-[-10px] left-[-5px]" data-theme="light">
+       <aside className="w-64 h-90vh bg-gray-200 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-[-10px] left-[-5px]" data-theme="light">
     
 
       <nav className="flex-1 p-4 space-y-1">
