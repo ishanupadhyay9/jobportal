@@ -409,7 +409,7 @@ const ProfileSetter = () => {
       type="file"
       accept="image/*"
       onChange={handleProfileFileChange}
-      className="mt-2 text-black bg-black"
+      className="mt-2 text-black border-2"
       name="profilePicture"
     />
     {profilePreview && (
