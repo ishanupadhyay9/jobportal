@@ -398,19 +398,19 @@ const ProfileSetter = () => {
             </div>
 
             {/* File Uploads */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
   {/* Profile Picture Card */}
-  <div className="relative flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors">
-    <PhotographIcon className="h-12 w-12 text-gray-400 mb-2" />
-    <label htmlFor="profilePicture" className="cursor-pointer text-gray-700 font-medium">
-      Click to upload profile picture
+  <div className="flex flex-col items-center p-4 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 transition">
+    <span className="text-2xl mb-2">📷</span>
+    <label htmlFor="profilePicture" className="cursor-pointer text-black font-medium">
+      Upload Profile Picture
     </label>
     <input
       id="profilePicture"
       type="file"
       accept="image/*"
       onChange={handleProfileFileChange}
-      className="absolute inset-0 opacity-0 cursor-pointer"
+      className="mt-2 text-black"
       name="profilePicture"
     />
     {profilePreview && (
@@ -423,28 +423,28 @@ const ProfileSetter = () => {
   </div>
 
   {/* Resume Card */}
-  <div className="relative flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 transition-colors">
-    <DocumentIcon className="h-12 w-12 text-gray-400 mb-2" />
-    <label htmlFor="resume" className="cursor-pointer text-gray-700 font-medium">
-      Click to upload resume (PDF)
+  <div className="flex flex-col items-center p-4 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-500 transition">
+    <span className="text-2xl mb-2">📄</span>
+    <label htmlFor="resume" className="cursor-pointer text-black font-medium">
+      Upload Resume (PDF)
     </label>
     <input
       id="resume"
       type="file"
       accept="application/pdf"
       onChange={handleResumeChange}
-      className="absolute inset-0 opacity-0 cursor-pointer"
+      className="mt-2 text-black"
       name="resume"
     />
     {resumeFileName && (
       <div className="mt-4 flex items-center space-x-2">
-        <span className="text-gray-600">{resumeFileName}</span>
+        <span className="text-black">{resumeFileName}</span>
         <button
           type="button"
           onClick={() => { setFormData(prev => ({ ...prev, resume: null })); setResumeFileName(""); }}
-          className="p-1 text-red-500 hover:text-red-700"
+          className="text-red-500 hover:text-red-700"
         >
-          <XCircleIcon className="h-5 w-5" />
+          ×
         </button>
       </div>
     )}
@@ -453,10 +453,11 @@ const ProfileSetter = () => {
 
 <button
   type="submit"
-  className="mt-8 w-full flex justify-center items-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg px-6 py-3 hover:from-blue-700 hover:to-indigo-700 transition"
+  className="mt-8 w-full bg-blue-600 text-white font-semibold rounded-lg px-6 py-3 hover:bg-blue-700 transition"
 >
   Save Profile
 </button>
+
           </form>
         </div>
       </div>
