@@ -9,7 +9,8 @@ const SidebarProfile = (props) => {
 
   return (
     <aside
-      className="w-64 h-screen bg-gray-200 border-r border-base-300 hidden lg:flex flex-col"
+      className="w-64 h-screen bg-gray-200 border-r border-base-300 hidden lg:flex flex-col fixed top-0 left-0 z-50"
+
       data-theme="light"
     >
       <nav className="flex-1 p-4 space-y-1 mt-4">

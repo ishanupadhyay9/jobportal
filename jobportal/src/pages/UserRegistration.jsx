@@ -13,19 +13,19 @@ const UserRegistration = () => {
   return (
     <div
       style={{
-       
-        background: "radial-gradient(circle at top left,  #000c28, #1a006f, #3f0071, #0a1e55 )",
+        minHeight: "100vh",
+        background: "radial-gradient(circle at top left, #000c28, #1a006f, #3f0071, #0a1e55)",
         display: "flex",
         flexDirection: "column",
       }}
     >
       {token ? (
         <>
-          <Navbar/>
-          <div className='flex flex-grow' style={{ padding: '20px' }}>
+          <Navbar />
+          <div className="flex flex-grow" style={{ padding: '20px' }}>
             <SidebarProfile showprofile={showProfile} setShowProfile={setShowProfile} />
-            <div className='ml-15 flex-grow'>
-              {!showProfile ? <Myapplications /> : <ProfileSetter />}
+            <div className="ml-15 flex-grow">
+              {showProfile ? <ProfileSetter /> : <Myapplications />}
             </div>
           </div>
         </>
@@ -34,6 +34,6 @@ const UserRegistration = () => {
       )}
     </div>
   );
-}
+};
 
 export default UserRegistration;
