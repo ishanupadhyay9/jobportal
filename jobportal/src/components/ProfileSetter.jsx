@@ -409,7 +409,7 @@ const ProfileSetter = () => {
       type="file"
       accept="image/*"
       onChange={handleProfileFileChange}
-      className="mt-2 text-black border-2"
+      className="mt-2 text-black border-2 border-dashed rounded-2xl pt-1"
       name="profilePicture"
     />
     {profilePreview && (
@@ -432,7 +432,7 @@ const ProfileSetter = () => {
       type="file"
       accept="application/pdf"
       onChange={handleResumeChange}
-      className="mt-2 text-black"
+      className="mt-2 text-black border-2 border-dashed rounded-2xl pt-1"
       name="resume"
     />
     {resumeFileName && (
