@@ -39,7 +39,6 @@ const SearchJobs = () => {
       
       if (response.success) {
         setJobs(response.data);
-        console.log(response.data);
         setHasSearched(true);
         toast.success(`Found ${response.data.length} jobs`);
       } else {
