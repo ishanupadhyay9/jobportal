@@ -1,4 +1,4 @@
-import { apiConnector } from "../apiConnnector.js";
+import { apiConnector } from "../apiConnector.js";
 import { jobEndPoints } from "../apis.js";
 
 import toast from "react-hot-toast";

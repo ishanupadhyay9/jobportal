@@ -14,7 +14,8 @@ export const profileEndpoints = {
   SET_USER_DETAILS_API: BASE_URL + "/profile/user",
   GET_EMP_DETAILS_API: BASE_URL + "/profile/employer",
   SET_EMP_DETAILS_API: BASE_URL + "/profile/employer",
-  UPDATE_EMP_DETAILS_API: BASE_URL +"/profile/user"
+  UPDATE_USER_DETAILS_API: BASE_URL +"/profile/user",
+  UPDATE_EMP_DETAILS_API: BASE_URL +"/profile/employer"
 }
 
 // STUDENTS ENDPOINTS
@@ -26,4 +27,5 @@ export const jobEndPoints = {
   APPLY_JOB_API: BASE_URL + "/jobs/apply",
   GET_USER_JOBS_API: BASE_URL +"/jobs/showjobs/user",
   SEARCH_JOB_API: BASE_URL + "/jobs/search"
+
 }

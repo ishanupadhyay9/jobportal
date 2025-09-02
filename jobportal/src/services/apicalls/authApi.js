@@ -1,4 +1,4 @@
-import { apiConnector } from "../apiConnnector.js";
+import { apiConnector } from "../apiConnector.js";
 import { authEndpoints, profileEndpoints } from "../apis";          // ← fixed name
 import {
   setLoading,
@@ -24,7 +24,9 @@ const {
   GET_EMP_DETAILS_API,
   SET_USER_DETAILS_API,
   SET_EMP_DETAILS_API,
-  UPDATE_EMP_DETAILS_API
+  UPDATE_EMP_DETAILS_API,
+  UPDATE_USER_DETAILS_API
+
 } = profileEndpoints;
 
 export async function signup(dispatch, navigate, email, user, password, confirmpassword) {
@@ -362,7 +364,7 @@ export async function updateUserProfile(
 
     const response = await apiConnector(
       "PATCH",  // Using PATCH method as per your route
-      UPDATE_EMP_DETAILS_API,  // This should be UPDATE_USER_DETAILS_API, but using your existing constant
+      UPDATE_USER_DETAILS_API,  // This should be UPDATE_USER_DETAILS_API, but using your existing constant
       formData,
       {
         Authorization: `Bearer ${token}`,
@@ -392,3 +394,75 @@ export async function updateUserProfile(
     dispatch(setLoading(false));
   }
 }
+
+export async function updateEmployerProfile(
+  dispatch,
+  navigate,
+  firstname,
+  lastname,
+  male,
+  org,
+  city,
+  state,
+  country,
+  logofile // File object (optional for updates)
+) {
+  dispatch(setLoading(true));
+
+  try {
+    const formData = new FormData();
+
+    // Only append fields that have values
+    if (firstname) formData.append("firstname", firstname);
+    if (lastname)  formData.append("lastname", lastname);
+    if (male !== undefined) {
+      formData.append(
+        "male",
+        (male === true || male === "true") ? "true" : "false"
+      );
+    }
+    if (org)     formData.append("org", org);
+    if (city)    formData.append("city", city);
+    if (state)   formData.append("state", state);
+    if (country) formData.append("country", country);
+
+    // Append file only if provided
+    if (logofile) formData.append("org_avatar", logofile);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Authentication token not found. Please login again.");
+      dispatch(setLoading(false));
+      return null;
+    }
+
+    const response = await apiConnector(
+      "PATCH",
+      UPDATE_EMP_DETAILS_API,
+      formData,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      }
+    );
+
+    if (response?.status === 200) {
+      toast.success("Employer profile updated successfully.");
+      // Optionally update Redux store here:
+      // dispatch(setEmployerData(response.data.profile));
+      if (navigate) navigate("/");
+      return response.data;
+    } else {
+      toast.error(response?.data?.message || "Failed to update employer profile.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error updating employer profile:", error);
+    const msg = error?.response?.data?.message;
+    toast.error(msg || "Server error occurred while updating employer profile.");
+    return null;
+  } finally {
+    dispatch(setLoading(false));
+  }
+}
+
