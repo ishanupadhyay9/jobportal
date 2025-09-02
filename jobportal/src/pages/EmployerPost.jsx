@@ -8,68 +8,71 @@ import { getJobDetails } from '../services/apicalls/jobApi'
 import LoadingScreen from '../components/LoadingScreen'
 
 const EmployerPost = () => {
-  const { jobId } = useParams(); // Get jobId from URL params
-  const navigate = useNavigate(); // Add navigate hook
-  const [jobData, setJobData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [shortlisted, setShortlisted] = useState(false);
+  const { jobId } = useParams() // Get jobId from URL params
+  const navigate = useNavigate() // Add navigate hook
+  const [jobData, setJobData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [shortlisted, setShortlisted] = useState(false)
 
   // Get token from Redux auth slice
-  const reduxToken = useSelector((state) => state.auth.token);
-  const localStorageToken = localStorage.getItem('token');
-  const token = reduxToken || localStorageToken || null;
+  const reduxToken = useSelector((state) => state.auth.token)
+  const localStorageToken = localStorage.getItem('token')
+  const token = reduxToken || localStorageToken || null
 
   // Back button handler
   const handleGoBack = () => {
-    navigate(-1); // Go back to previous page
-  };
+    navigate(-1) // Go back to previous page
+  }
 
   // Fetch job details when component mounts
   useEffect(() => {
     const fetchJobDetails = async () => {
       if (!jobId || !token) {
-        console.log("Missing jobId or token");
-        setLoading(false);
-        return;
+        console.log("Missing jobId or token")
+        setLoading(false)
+        return
       }
 
-      setLoading(true);
+      setLoading(true)
       try {
-        console.log("Fetching job details for jobId:", jobId);
-        const response = await getJobDetails(jobId, token);
+        console.log("Fetching job details for jobId:", jobId)
+        const response = await getJobDetails(jobId, token)
         
         if (response.success) {
-          setJobData(response.data);
-          console.log("Job details fetched:", response.data);
+          setJobData(response.data)
+          console.log("Job details fetched:", response.data)
         } else {
-          console.error("Failed to fetch job details:", response);
+          console.error("Failed to fetch job details:", response)
         }
       } catch (error) {
-        console.error('Error fetching job details:', error);
+        console.error('Error fetching job details:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchJobDetails();
-  }, [jobId, token]);
+    fetchJobDetails()
+  }, [jobId, token])
 
   const handleShortlist = () => {
-    setShortlisted(!shortlisted);
-    console.log(shortlisted ? 'Removed from shortlist' : 'Added to shortlist');
-  };
+    setShortlisted(!shortlisted)
+    if (!shortlisted) {
+      navigate(`/jobs/${jobId}/applicants`)
+    }
+    console.log(shortlisted ? 'Removed from shortlist' : 'Added to shortlist')
+  }
 
   // Calculate days remaining
   const calculateDaysRemaining = (lastDate) => {
-    const currentDate = new Date();
-    const deadline = new Date(lastDate);
-    const timeDifference = deadline.getTime() - currentDate.getTime();
-    const daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24));
-    return daysRemaining;
-  };
+    const currentDate = new Date()
+    const deadline = new Date(lastDate)
+    const timeDifference = deadline.getTime() - currentDate.getTime()
+    const daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24))
+    return daysRemaining
+  }
 
   if (loading) {
-    return <LoadingScreen />;
+    return <LoadingScreen />
   }
 
   if (!jobData) {
@@ -80,21 +83,21 @@ const EmployerPost = () => {
           <p className="text-gray-500">Job not found or failed to load.</p>
         </div>
       </div>
-    );
+    )
   }
 
   // Extract data from fetched job details
-  const companyLogo = jobData.org_avatar;
-  const companyName = jobData.org;
-  const employerName = `${jobData.employer_firstname || ''} ${jobData.employer_lastname || ''}`.trim() || 'Not specified';
-  const jobTitle = jobData.title;
-  const jobDescription = jobData.body;
-  const min10thPercentage = `${jobData.min_10th_percentage}%`;
-  const min12thPercentage = `${jobData.min_12th_percentage}%`;
-  const lastDateToApply = jobData.terminate_at;
-  const totalApplicants = jobData.cur_applications;
-  const daysRemaining = calculateDaysRemaining(lastDateToApply);
-  const jobImage = img; // Keep using the default image
+  const companyLogo = jobData.org_avatar
+  const companyName = jobData.org
+  const employerName = `${jobData.employer_firstname || ''} ${jobData.employer_lastname || ''}`.trim() || 'Not specified'
+  const jobTitle = jobData.title
+  const jobDescription = jobData.body
+  const min10thPercentage = `${jobData.min_10th_percentage}%`
+  const min12thPercentage = `${jobData.min_12th_percentage}%`
+  const lastDateToApply = jobData.terminate_at
+  const totalApplicants = jobData.cur_applications
+  const daysRemaining = calculateDaysRemaining(lastDateToApply)
+  const jobImage = img // Keep using the default image
 
   return (
     <div className='w-full overflow-x-hidden min-h-screen'>
@@ -107,7 +110,6 @@ const EmployerPost = () => {
             className="flex  items-center space-x-2 px-4 py-2 bg-white hover:bg-gray-50 border border-gray-300  shadow-sm  hover:shadow-md group rounded-full hover:rounded-lg transition duration-1000  ease-in-out hover:text-white"
           >
             <FaArrowLeft className="text-gray-600 group-hover:text-blue-600 transition-colors duration-200" />
-            
           </button>
         </div>
 
@@ -218,13 +220,12 @@ const EmployerPost = () => {
                 {/* Status Indicator */}
                 <div className="flex items-center justify-center mb-4">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    jobData.active
-                      ? daysRemaining > 7 
-                        ? 'bg-green-100 text-green-800' 
-                        : daysRemaining > 0 
+                    jobData.active ? (daysRemaining > 7 
+                      ? 'bg-green-100 text-green-800' 
+                      : daysRemaining > 0 
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-red-100 text-red-800'
-                      : 'bg-gray-100 text-gray-800'
+                    ) : 'bg-gray-100 text-gray-800'
                   }`}>
                     {jobData.active ? (daysRemaining > 0 ? 'Active' : 'Closed') : 'Inactive'}
                   </span>
@@ -238,8 +239,8 @@ const EmployerPost = () => {
                     !jobData.active || daysRemaining <= 0
                       ? 'bg-gray-400 text-white cursor-not-allowed'
                       : shortlisted
-                      ? 'bg-green-600 text-white hover:bg-green-700'
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                        ? 'bg-green-600 text-white hover:bg-green-700'
+                        : 'bg-blue-600 text-white hover:bg-blue-700'
                   } focus:ring-4 focus:ring-blue-300 focus:outline-none`}
                 >
                   {shortlisted ? '✓ Shortlisted' : 'Shortlist Candidates'}

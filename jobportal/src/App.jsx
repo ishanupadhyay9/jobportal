@@ -15,17 +15,19 @@ import SearchJobs from './pages/SearchJobs.jsx'
 
 const router = createBrowserRouter(
   [
-    { path: "/", element: <Home /> },
-    { path: "/jobs", element: <Jobs /> },
-    { path: "/search-jobs", element: <SearchJobs /> },
-    { path: "/login", element: <Login /> },
-    { path: "/employer-signup", element: <EmployerSignup /> },
-    { path: "/user-signup", element: <Signup /> },
-    { path: "/user-personal-tab", element: <UserRegistration /> },
-    { path: "/employer-personal-tab", element: <EmployerSection /> },
-    { path: "/employer/job/:jobId", element: <EmployerPost /> },
-    { path: "/user-job-post/:jobId", element: <UserJobPost /> }  // Added route for UserJobPost with jobId param
-  ]
+  { path: "/", element: <Home /> },
+  { path: "/jobs", element: <Jobs /> },
+  { path: "/search-jobs", element: <SearchJobs /> },
+  { path: "/login", element: <Login /> },
+  { path: "/employer-signup", element: <EmployerSignup /> },
+  { path: "/user-signup", element: <Signup /> },
+  { path: "/user-personal-tab", element: <UserRegistration /> },
+  { path: "/employer-personal-tab", element: <EmployerSection /> },
+  { path: "/employer/job/:jobId", element: <EmployerPost /> },
+  { path: "/jobs/:jobId/applicants", element: <Shortlisted /> },  // Added shortlist route
+  { path: "/user-job-post/:jobId", element: <UserJobPost /> }
+]
+
 )
 
 function App() {

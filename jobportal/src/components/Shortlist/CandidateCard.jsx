@@ -26,15 +26,15 @@ const CandidateCard = ({
           {number}
         </div>
         <img
-          src={candidate.image}
-          alt={candidate.name}
+          src={candidate.user_avatar_link}
+          alt={candidate.firstname}
           className="w-24 h-24 rounded-full object-cover absolute -bottom-9 left-1/2 -translate-x-1/2 border-4 border-white shadow"
         />
       </div>
 
       {/* Name */}
       <div className="pt-9 pb-4 px-3 text-center">
-        <h3 className="text-sm font-bold text-gray-900 mb-3">{candidate.name}</h3>
+        <h3 className="text-sm font-bold text-gray-900 mb-3">{candidate.firstname+" "+candidate.lastname}</h3>
 
         {/* Buttons */}
         <div className="space-y-2">

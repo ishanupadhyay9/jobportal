@@ -9,7 +9,8 @@ const {CREATE_JOB_API,
      GET_JOB_DETAILS,
      GET_USER_JOBS_API,
       APPLY_JOB_API,
-      SEARCH_JOB_API
+      SEARCH_JOB_API,
+      SHOW_APPLICANTS_API
  }= jobEndPoints;
 
 export async function createJob(
@@ -264,6 +265,28 @@ export async function searchJobsByTitle(title, token) {
       success: false,
       message: error.response?.data?.message || "Error searching jobs",
       error: error.response?.data || error.message
+    };
+  }
+}
+
+export async function fetchJobApplicants(jobId, token) {
+  try {
+    const url = `${SHOW_APPLICANTS_API}/${jobId}`;
+    const response = await apiConnector("GET", url, null, {
+      Authorization: `Bearer ${token}`,
+    });
+    toast.success("Applicants fetched successfully.");
+    return {
+      success: true,
+      data: response.data,
+    };
+  } catch (error) {
+    console.error("Error fetching applicants:", error);
+    toast.error("Error fetching applicants");
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error fetching applicants",
+      error: error.response?.data || error.message,
     };
   }
 }
