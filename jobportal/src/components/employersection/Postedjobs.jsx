@@ -99,34 +99,34 @@ const Postedjobs = () => {
 
   return (
     <div className='w-full h-full relative'>
-      <div className="max-w-4xl left-3 mx-auto p-6 bg-white w-[90%] mt-3 h-[159px] rounded-xl">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900">All Jobs Posting</h1>
+      <div className="max-w-4xl left-3 mx-auto p-6 bg-white w-[90%] mt-3  rounded-xl">
+        <h1 className="text-3xl font-bold mb-6 text-gray-900 text-center">All Jobs Posting</h1>
         
-        <div className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow">
+        <div className="flex items-center space-x-4   rounded-lg ">
           {companyLogoUrl && (
             <img
               src={companyLogoUrl}
               alt={`${companyName} Logo`}
-              className="w-10 h-10 object-contain"
+              className="w-20 h-20 mb-2 rounded-full border-1 border-gray-900 shadow-3xl object-contain"
             />
           )}
-          <span className="text-xl font-semibold text-gray-800">{companyName}</span>
+          <span className="text-2xl ml-3 font-bold text-gray-800">{companyName}</span>
         </div>
       </div>
 
       {/* Active Job Postings */}
-      <div className="m-6 p-6 rounded-xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Active Job Postings ({activeJobs.length})</h1>
+      <div className="mt-5  p-6 rounded-xl">
+        <h1 className="text-3xl font-bold mb-6 text-center">Active Job Postings</h1>
 
         {activeJobs.length === 0 ? (
           <p className="text-center text-gray-500">No active jobs found.</p>
         ) : (
-          <div className="flex items-center">
+          <div className="flex  items-start justify-center ">
             {/* Left Button */}
             <button
               onClick={handleActivePrev}
               disabled={activeStartIndex === 0}
-              className="px-4 py-4 bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+              className="px-4 py-4 mt-16 bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
             >
               <FaArrowLeft />
             </button>
@@ -153,7 +153,7 @@ const Postedjobs = () => {
             <button
               onClick={handleActiveNext}
               disabled={activeStartIndex + visibleCount >= activeJobs.length}
-              className="px-4 py-4 bg-blue-500 rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+              className="px-4 py-4 bg-blue-500 mt-16 rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
             >
               <FaArrowRight/>
             </button>
@@ -162,18 +162,18 @@ const Postedjobs = () => {
       </div>
 
       {/* Completed Job Postings */}
-      <div className="m-6 p-6 rounded-xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Completed Job Postings ({inactiveJobs.length})</h1>
+      <div className="relative bottom-[150px] p-6 rounded-xl">
+        <h1 className="text-3xl font-bold mb-6 text-center">Completed Job Postings </h1>
 
         {inactiveJobs.length === 0 ? (
           <p className="text-center text-gray-500">No completed jobs found.</p>
         ) : (
-          <div className="flex items-center">
+          <div className="flex items-start mt-5">
             {/* Left Button */}
             <button
               onClick={handleInactivePrev}
               disabled={inactiveStartIndex === 0}
-              className="px-4 py-4 bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+              className="px-4 py-4 mt-16  bg-blue-500 shadow rounded-full mr-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
             >
               <FaArrowLeft />
             </button>
@@ -186,6 +186,7 @@ const Postedjobs = () => {
                   <Jobcard
                     key={job.job_id || index + inactiveStartIndex}
                     companyName={job.org}
+                    jobId={job.job_id}
                     companyLogo={job.org_avatar}
                     jobTitle={job.title}
                     description={job.body}
@@ -199,7 +200,7 @@ const Postedjobs = () => {
             <button
               onClick={handleInactiveNext}
               disabled={inactiveStartIndex + visibleCount >= inactiveJobs.length}
-              className="px-4 py-4 bg-blue-500 rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
+              className="px-4 py-4 mt-16 bg-blue-500 rounded-full ml-4 hover:bg-gray-200 hover:text-black transition disabled:opacity-50"
             >
               <FaArrowRight/>
             </button>

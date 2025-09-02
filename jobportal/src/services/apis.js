@@ -27,5 +27,8 @@ export const jobEndPoints = {
   APPLY_JOB_API: BASE_URL + "/jobs/apply",
   GET_USER_JOBS_API: BASE_URL +"/jobs/showjobs/user",
   SEARCH_JOB_API: BASE_URL + "/jobs/search",
-  SHOW_APPLICANTS_API: BASE_URL + "/jobs/showapplicants"
+  SHOW_APPLICANTS_API: BASE_URL + "/jobs/showapplicants",
+  END_DRIVE_API: BASE_URL + "/jobs/removejob",
+  CHECK_STATUS_API: BASE_URL +"/jobs/checkapplied",
+  DISQUALIFY_API: BASE_URL +"/jobs/removeapplicant"
 }

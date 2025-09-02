@@ -32,6 +32,8 @@ console.log(state);
     },
     setUserId: (state, action) => {
       state.userId = action.payload;
+      console.log("check ")
+      console.log("userId set to : ",action.payload)
     },
     setUserData: (state, action) => {
       state.userData = action.payload;

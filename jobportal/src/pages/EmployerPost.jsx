@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { FaArrowLeft } from 'react-icons/fa'
 import Navbar from '../components/Navbar'
 import img from "../images/tech.gif"
-import { getJobDetails } from '../services/apicalls/jobApi'
+import { getJobDetails, removeJob } from '../services/apicalls/jobApi' // Added removeJob import
 import LoadingScreen from '../components/LoadingScreen'
 
 const EmployerPost = () => {
@@ -13,6 +13,7 @@ const EmployerPost = () => {
   const [jobData, setJobData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [shortlisted, setShortlisted] = useState(false)
+  const [endingDrive, setEndingDrive] = useState(false) // Add state for end drive loading
 
   // Get token from Redux auth slice
   const reduxToken = useSelector((state) => state.auth.token)
@@ -22,6 +23,32 @@ const EmployerPost = () => {
   // Back button handler
   const handleGoBack = () => {
     navigate(-1) // Go back to previous page
+  }
+
+  // End Drive button handler
+  const handleEndDrive = async () => {
+    if (!jobId || !token) {
+      console.log("Missing jobId or token")
+      return
+    }
+
+    setEndingDrive(true)
+    try {
+      console.log("Ending drive for jobId:", jobId)
+      const response = await removeJob(jobId, token)
+      
+      if (response.success) {
+        console.log("Drive ended successfully:", response.data)
+        // Update local state to reflect the change
+        setJobData(prev => ({ ...prev, active: false }))
+      } else {
+        console.error("Failed to end drive:", response)
+      }
+    } catch (error) {
+      console.error('Error ending drive:', error)
+    } finally {
+      setEndingDrive(false)
+    }
   }
 
   // Fetch job details when component mounts
@@ -100,7 +127,7 @@ const EmployerPost = () => {
   const jobImage = img // Keep using the default image
 
   return (
-    <div className='w-full overflow-x-hidden min-h-screen'>
+<div className="min-h-screen bg-gradient-to-r from-blue-900 via-purple-900 to-purple-800 pb-10">
       <Navbar/>
       <div className="px-4 pt-3">
         {/* Stylish Back Button */}
@@ -231,20 +258,40 @@ const EmployerPost = () => {
                   </span>
                 </div>
 
-                {/* Shortlist Button */}
-                <button
-                  onClick={handleShortlist}
-                  disabled={!jobData.active || daysRemaining <= 0}
-                  className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 ${
-                    !jobData.active || daysRemaining <= 0
-                      ? 'bg-gray-400 text-white cursor-not-allowed'
-                      : shortlisted
-                        ? 'bg-green-600 text-white hover:bg-green-700'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                  } focus:ring-4 focus:ring-blue-300 focus:outline-none`}
-                >
-                  {shortlisted ? '✓ Shortlisted' : 'Shortlist Candidates'}
-                </button>
+                {/* Action Buttons */}
+                <div className="space-y-3">
+                  {/* Shortlist Button */}
+                  <button
+                    onClick={handleShortlist}
+                    disabled={!jobData.active || daysRemaining <= 0}
+                    className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 ${
+                      !jobData.active || daysRemaining <= 0
+                        ? 'bg-orange-400 text-white cursor-not-allowed'
+                        : shortlisted
+                          ? 'bg-green-600 text-white hover:bg-green-700'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                    } focus:ring-4 focus:ring-blue-300 focus:outline-none`}
+                  >
+                    {(jobData.active)? "View Candidates" :"Show Results"}
+                  </button>
+
+                  {/* End Drive Button */}
+                 {
+                  (jobData.active)? <button
+                    onClick={handleEndDrive}
+                    disabled={!jobData.active || endingDrive}
+                    className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 ${
+                      !jobData.active
+                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                        : endingDrive
+                          ? 'bg-red-400 text-white cursor-not-allowed'
+                          : 'bg-red-600 text-white hover:bg-red-700'
+                    } focus:ring-4 focus:ring-red-300 focus:outline-none`}
+                  >
+                    {endingDrive ? 'Ending Drive...' : 'End Drive'}
+                  </button>:<div></div>
+                 }
+                </div>
               </div>
             </div>
           </div>

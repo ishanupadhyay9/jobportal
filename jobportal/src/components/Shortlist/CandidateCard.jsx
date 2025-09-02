@@ -1,15 +1,23 @@
 
 import React, { useState } from 'react';
 import { FaTrash, FaComments, FaFileAlt } from 'react-icons/fa';
-
+import { disqualifyApplicant } from '../../services/apicalls/jobApi';
+import { useSelector } from 'react-redux';
 const CandidateCard = ({
+  userId,
+  jobId,
   candidate,
   number        = 1,
   onConnect      = () => {},
-  onRemove       = () => {},
   onSelect       = () => {},
   onShowResume   = () => {}
 }) => {
+  const [removed,setRemoved] = useState(false);
+  const token = useSelector((state)=>state.auth.token);
+   const  onRemove   = () => {
+    disqualifyApplicant(userId,jobId,token)
+  setRemoved(true)};
+
   const [selected, setSelected] = useState(false);
 
   const toggleSelect = () => {
@@ -19,7 +27,9 @@ const CandidateCard = ({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition">
+  <div>
+    {
+      (removed)?<div></div>:  <div className="bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition">
       {/* Top banner & number badge */}
       <div className="relative h-28 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600">
         <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-green-500 text-white text-xs font-bold flex items-center justify-center">
@@ -69,6 +79,8 @@ const CandidateCard = ({
         </div>
       </div>
     </div>
+    }
+  </div>
   );
 };
 

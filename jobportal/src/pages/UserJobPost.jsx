@@ -3,20 +3,57 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import img from "../images/tech.gif";
 import { useSelector } from 'react-redux';
-import { getJobDetails, applyToJob } from '../services/apicalls/jobApi'; // Added applyToJob import
+import { getJobDetails, applyToJob, checkIfApplied } from '../services/apicalls/jobApi'; // Added checkIfApplied import
 import LoadingScreen from '../components/LoadingScreen';
-import toast from 'react-hot-toast'; // Added toast import
+import toast from 'react-hot-toast';
+import { jwtDecode } from 'jwt-decode';
 
 const UserJobPost = () => {
   const { jobId } = useParams();
   const [jobData, setJobData] = useState(null);
   const [applied, setApplied] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [applying, setApplying] = useState(false); // Added applying state
+  const [applying, setApplying] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(false); // Added for checking application status
 
   const reduxToken = useSelector((state) => state.auth.token);
   const localStorageToken = localStorage.getItem('token');
   const token = reduxToken || localStorageToken || null;
+
+  // Get user ID from Redux store
+  const userId = useSelector((state) => state.auth.userId) ||jwtDecode(useSelector((state)=>state.auth.token)).id;
+ 
+  console.log(userId)
+  useEffect(() => {
+    const checkApplicationStatus = async () => {
+      if (!jobId || !userId || !token) {
+        
+        return;
+      }
+
+      setCheckingStatus(true);
+      try {
+        console.log("Checking if user has applied to job...");
+        const response = await checkIfApplied(userId, jobId, token);
+        
+        // Console log the result as requested
+        console.log("Check if applied API response:", response);
+        
+        if (response.success) {
+          setApplied(response.applied);
+          console.log(`User ${response.applied ? 'has already' : 'has not'} applied to this job`);
+        } else {
+          console.error("Failed to check application status:", response);
+        }
+      } catch (error) {
+        console.error('Error checking application status:', error);
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+
+    checkApplicationStatus();
+  }, [jobId, userId, token]);
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -53,6 +90,11 @@ const UserJobPost = () => {
       return;
     }
 
+    if (applied) {
+      toast.info("You have already applied to this job");
+      return;
+    }
+
     setApplying(true);
     try {
       const response = await applyToJob(jobId, token);
@@ -77,7 +119,7 @@ const UserJobPost = () => {
     }
   };
 
-  if (loading) {
+  if (loading || checkingStatus) {
     return <LoadingScreen />;
   }
 
@@ -103,7 +145,7 @@ const UserJobPost = () => {
     min_12th_percentage,
     terminate_at: lastDateToApply,
     cur_applications: totalApplicants,
-    active: isJobActive, // Added to check if job is active
+    active: isJobActive,
   } = jobData;
 
   const employerName = `${employer_firstname || ''} ${employer_lastname || ''}`.trim();
@@ -114,7 +156,7 @@ const UserJobPost = () => {
   const canApply = isJobActive && daysRemaining > 0 && !applied;
 
   return (
-    <div className="w-full overflow-x-hidden min-h-screen">
+<div className="min-h-screen bg-gradient-to-r from-blue-900 via-purple-900 to-purple-800 pb-10">
       <Navbar />
 
       <div className="px-4 pt-3 max-w-[1080px] mx-auto">
@@ -212,10 +254,10 @@ const UserJobPost = () => {
 
                 <button
                   onClick={handleApply}
-                  disabled={!canApply || applying}
+                  disabled={!canApply || applying || applied}
                   className={`w-full py-3 px-4 rounded-lg font-semibold text-sm transition-all duration-200 focus:outline-none ${
                     applied
-                      ? 'bg-green-500 text-white cursor-not-allowed'
+                      ? 'bg-green-500 text-white cursor-not-allowed' // Green color for already applied
                       : !canApply
                       ? 'bg-gray-400 text-white cursor-not-allowed'
                       : applying
@@ -223,7 +265,11 @@ const UserJobPost = () => {
                       : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
                 >
-                  {applying ? 'Applying...' : applied ? '✓ Applied' : 'Apply Now'}
+                  {applying 
+                    ? 'Applying...' 
+                    : applied 
+                      ? '✓ Already Applied' // Updated text for already applied state
+                      : 'Apply Now'}
                 </button>
               </div>
             </div>

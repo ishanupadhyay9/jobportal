@@ -10,7 +10,10 @@ const {CREATE_JOB_API,
      GET_USER_JOBS_API,
       APPLY_JOB_API,
       SEARCH_JOB_API,
-      SHOW_APPLICANTS_API
+      SHOW_APPLICANTS_API,
+      END_DRIVE_API,
+      CHECK_STATUS_API,
+      DISQUALIFY_API
  }= jobEndPoints;
 
 export async function createJob(
@@ -287,6 +290,85 @@ export async function fetchJobApplicants(jobId, token) {
       success: false,
       message: error.response?.data?.message || "Error fetching applicants",
       error: error.response?.data || error.message,
+    };
+  }
+}
+export async function removeJob(jobId, token) {
+  console.log("the token is", token);
+  console.log("jobId is", jobId);
+  
+  try {
+    const response = await apiConnector("PATCH", `${END_DRIVE_API}/${jobId}`, null, {
+      Authorization: `Bearer ${token}`,
+    });
+    
+    toast.success("Job removed successfully");
+    return {
+      success: true,
+      data: response.data,
+      message: response.data.message || "Job removed successfully"
+    };
+  } catch (error) {
+    console.error("Error removing job:", error);
+    toast.error("Error removing job");
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error removing job",
+      error: error.response?.data || error.message
+    };
+  }
+}
+export async function checkIfApplied(userId, jobId, token) {
+  console.log("the token is", token);
+  console.log("userId is", userId);
+  console.log("jobId is", jobId);
+  
+  try {
+    const response = await apiConnector("GET", `${CHECK_STATUS_API}/${userId}/${jobId}`, null, {
+      Authorization: `Bearer ${token}`,
+    });
+    
+    return {
+      success: true,
+      data: response.data,
+      applied: response.data.applied || false
+    };
+  } catch (error) {
+    console.error("Error checking application status:", error);
+    toast.error("Error checking application status");
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error checking application status",
+      error: error.response?.data || error.message,
+      applied: false
+    };
+  }
+}
+
+
+export async function disqualifyApplicant(userId, jobId, token) {
+  console.log("the token is", token);
+  console.log("userId is", userId);
+  console.log("jobId is", jobId);
+  
+  try {
+    const response = await apiConnector("PATCH", `${DISQUALIFY_API}/${userId}/${jobId}`, null, {
+      Authorization: `Bearer ${token}`,
+    });
+    
+    toast.success("Applicant disqualified successfully");
+    return {
+      success: true,
+      data: response.data,
+      message: response.data.message || "Applicant disqualified successfully"
+    };
+  } catch (error) {
+    console.error("Error disqualifying applicant:", error);
+    toast.error("Error disqualifying applicant");
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error disqualifying applicant",
+      error: error.response?.data || error.message
     };
   }
 }

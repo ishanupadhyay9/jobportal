@@ -119,6 +119,8 @@ export default function Shortlisted() {
               {view.map((c, idx) => (
                 <CandidateCard
                   key={c.user_id}
+                  userId = {c.user_id}
+                  jobId = {jobId}
                   candidate={c}
                   number={start + idx + 1}
                   onShowResume={handleShowResume}

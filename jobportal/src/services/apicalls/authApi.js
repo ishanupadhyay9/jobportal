@@ -95,12 +95,10 @@ export async function login(dispatch, navigate, email ,role , password) {
     
     const token = response.data.token;  
     const decoded = jwtDecode(token); 
-    console.log(decoded); 
     dispatch(setUserId(decoded.id));
-    console.log(decoded);
+    console.log("decoded id is", decoded.id)
     dispatch(setToken(token));
        localStorage.setItem("token", response.data.token) ;
-    console.log(decoded);                        
      dispatch(printAuth());
     // Fetch profile existence
    navigate(
