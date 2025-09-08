@@ -12,6 +12,8 @@ import EmployerPost from './pages/EmployerPost.jsx'
 import Shortlisted from './pages/Shortlisted.jsx'
 import UserJobPost from './pages/UserJobPost.jsx'  // Import UserJobPost
 import SearchJobs from './pages/SearchJobs.jsx'
+import CallPage from './pages/CallPage.jsx';
+import ChatPage from './pages/ChatPage.jsx';
 
 const router = createBrowserRouter(
   [
@@ -25,7 +27,9 @@ const router = createBrowserRouter(
   { path: "/employer-personal-tab", element: <EmployerSection /> },
   { path: "/employer/job/:jobId", element: <EmployerPost /> },
   { path: "/jobs/:jobId/applicants", element: <Shortlisted /> },  // Added shortlist route
-  { path: "/user-job-post/:jobId", element: <UserJobPost /> }
+  { path: "/user-job-post/:jobId", element: <UserJobPost /> },
+  {path:"/call/:id", element:<CallPage/>},
+  {path:"/chat/:id", element:<ChatPage/>}
 ]
 
 )

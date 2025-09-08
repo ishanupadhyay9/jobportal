@@ -3,15 +3,18 @@ import React, { useState } from 'react';
 import { FaTrash, FaComments, FaFileAlt } from 'react-icons/fa';
 import { disqualifyApplicant } from '../../services/apicalls/jobApi';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 const CandidateCard = ({
   userId,
   jobId,
   candidate,
   number        = 1,
-  onConnect      = () => {},
   onSelect       = () => {},
   onShowResume   = () => {}
 }) => {
+  const navigate = useNavigate();
+   const onConnect  = () => {navigate(`/chat/${userId}`)};
+
   const [removed,setRemoved] = useState(false);
   const token = useSelector((state)=>state.auth.token);
    const  onRemove   = () => {

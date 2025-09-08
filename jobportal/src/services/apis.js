@@ -32,3 +32,6 @@ export const jobEndPoints = {
   CHECK_STATUS_API: BASE_URL +"/jobs/checkapplied",
   DISQUALIFY_API: BASE_URL +"/jobs/removeapplicant"
 }
+export const streamEndPoints  = {
+  GET_STREAM_TOKEN_API: BASE_URL + "/stream/token"
+}

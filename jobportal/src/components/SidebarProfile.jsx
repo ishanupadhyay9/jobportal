@@ -1,49 +1,58 @@
-import React from 'react'
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router';
-const SidebarProfile = (props) => {
-  const showProfile = props.showprofile;
-  const setShowProfile = props.setShowProfile;
-  const isregistered = useSelector((state)=>state.auth.isRegistered);
-  return (
-    <div>
-       <aside className="w-64 bg-gray-200 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0" data-theme="light">
-    
+import React from "react";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-      <nav className="flex-1 p-4 space-y-1">
-       {isregistered && <Link
-          to="/"
-          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case  `}
-        >
-          <span>Home</span>
-        </Link>} 
+const SidebarProfile = ({ activeTab, setActiveTab }) => {
+  const isregistered = useSelector((state) => state.auth.isRegistered);
+
+  const buttonBase =
+    "btn btn-ghost justify-start w-full gap-3 px-3 normal-case text-left rounded-xl";
+
+  return (
+    <aside
+      className="w-64 bg-gray-200 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0"
+      data-theme="light"
+    >
+      <nav className="flex-1 p-4 space-y-2">
+        {isregistered && (
+          <Link
+            to="/"
+            className={`${buttonBase} ${activeTab === "home" ? "bg-gray-200" : ""}`}
+            onClick={() => setActiveTab("home")}
+          >
+            <span>Home</span>
+          </Link>
+        )}
 
         <button
-   
-          className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case rounded-xl
-         ${showProfile&&"bg-gray-600 text-white"}`}
-         onClick={()=>{setShowProfile(true)}}
+          className={`${buttonBase} ${activeTab === "profile" ? "bg-gray-600 text-white" : ""}`}
+          onClick={() => setActiveTab("profile")}
+          aria-pressed={activeTab === "profile"}
         >
           <span>My Profile</span>
         </button>
 
-       {
-        isregistered &&  <button
-          className={`btn btn-ghost justify-start w-full gap-3 px-3 rounded-xl normal-case 
-          ${!showProfile&&"bg-gray-600 text-white"} `}
-                   onClick={()=>{setShowProfile(false)}}
+        {isregistered && (
+          <button
+            className={`${buttonBase} ${activeTab === "applications" ? "bg-gray-600 text-white" : ""}`}
+            onClick={() => setActiveTab("applications")}
+            aria-pressed={activeTab === "applications"}
+          >
+            <span>Applications</span>
+          </button>
+        )}
 
+        {/* Chat tab */}
+        <button
+          className={`${buttonBase} ${activeTab === "chat" ? "bg-gray-600 text-white" : ""}`}
+          onClick={() => setActiveTab("chat")}
+          aria-pressed={activeTab === "chat"}
         >
-          <span>Applications</span>
+          <span>Messages</span>
         </button>
-       }
       </nav>
-
-     
-      
     </aside>
-    </div>
-  )
-}
+  );
+};
 
-export default SidebarProfile
+export default SidebarProfile;
