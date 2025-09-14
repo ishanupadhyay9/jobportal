@@ -162,7 +162,7 @@ const Postedjobs = () => {
       </div>
 
       {/* Completed Job Postings */}
-      <div className="relative p-6 rounded-xl ">
+      <div className="mt-1 p-6 rounded-xl ">
         <h1 className="text-3xl font-bold mb-6 text-center">Completed Job Postings </h1>
 
         {inactiveJobs.length === 0 ? (
