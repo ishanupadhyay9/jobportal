@@ -10,7 +10,13 @@ const Jobcard = ({
   buttonText = "See Status"
 }) => {
   const navigate = useNavigate();
+const words = description.trim().split(/\s+/);
 
+  // Take first 20 words
+  const limited = words.slice(0, 20).join(" ");
+
+  // Add ellipsis if truncated
+  const text =  words.length > 20 ? limited + "..." : limited;
   const handleJobClick = () => {
     if (jobId) {
       // Navigate to EmployerPost component with jobId in params
@@ -37,7 +43,7 @@ const Jobcard = ({
           <span>{companyName}</span>
         </h2>
         <h2 className="card-title text-m text-gray-600">{jobTitle}</h2>
-        <p className="text-[15px]">{description}</p>
+        <p className="text-[15px]">{text}</p>
         <div className="justify-left card-actions mb-3">
           <button 
             onClick={handleJobClick}

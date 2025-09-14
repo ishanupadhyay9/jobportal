@@ -104,8 +104,9 @@ const EmployerSignup = () => {
             <form onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold">Create an Account</h2>
-                  <p className="text-sm opacity-70">Join JobGenius!</p>
+                  <h2 className="text-xl font-semibold">Create an Employer Account</h2>
+               <Link to={"/user-signup"}>
+                           <p className="text-xs mt-1 text-blue-400 ">Are you an Applicant? Register here</p></Link> 
                 </div>
 
                 <div className="space-y-3">
