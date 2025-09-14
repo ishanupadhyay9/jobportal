@@ -98,6 +98,8 @@ export async function login(dispatch, navigate, email ,role , password) {
     dispatch(setUserId(decoded.id));
     console.log("decoded id is", decoded.id)
     dispatch(setToken(token));
+    if(role!="user"){dispatch(setRole("employer"));}
+    if(role==="user"){dispatch(setRole("user"));}
        localStorage.setItem("token", response.data.token) ;
      dispatch(printAuth());
     // Fetch profile existence
@@ -171,6 +173,8 @@ export async function setEmployerDetails(
     if (response?.status === 201) {
       toast.success("Employer profile created successfully.");
       dispatch(setIsRegistered(true));
+      console.log(formData);
+      
       dispatch(setRole("employer"));
       navigate("/");
     } else {

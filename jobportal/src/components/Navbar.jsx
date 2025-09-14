@@ -13,7 +13,8 @@ export default function Navbar() {
   
   // Check if employer_id exists and is not null
   const isEmployer = userData?.employer_id != null;
-  
+  console.log("role is :",role);
+  console.log("hiiiiiiiii");
   const handleLogout = () => {
     dispatch(logout());
     toast.success("Logged out successfully");
@@ -40,7 +41,7 @@ export default function Navbar() {
               Home
             </Link>
             {/* Show Jobs link only if employer_id is null or doesn't exist */}
-            {!isEmployer && (
+            {(role != "employer") && (
               <Link
                 to="/jobs"
                 className="text-gray-700 hover:text-blue-600 font-medium transition"
@@ -49,7 +50,7 @@ export default function Navbar() {
               </Link>
             )}
             {/* Show Search link only if employer_id is null or doesn't exist */}
-            {!isEmployer && (
+            {(role!="employer") && (
               <Link
                 to="/search-jobs"
                 className="text-gray-700 hover:text-blue-600 font-medium transition"
@@ -65,7 +66,7 @@ export default function Navbar() {
           {token ? (
             <>
               <Link
-                to={isEmployer ? "/employer-personal-tab" : "/user-personal-tab"}
+                to={(role=="employer") ? "/employer-personal-tab" : "/user-personal-tab"}
                 className="px-4 py-2 rounded-md border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white transition"
               >
                 Profile
