@@ -10,7 +10,9 @@ const ApplyCards = ({
   buttonText = "See Status"
 }) => {
   const navigate = useNavigate();
-
+  const words = description.trim().split(/\s+/);
+  const newt = (words.length <= 20)? description:
+   words.slice(0, 20).join(' ') + '...';
   const handleJobClick = () => {
     if (jobId) {
       // Navigate to UserJobPost component with jobId in params
@@ -37,7 +39,7 @@ const ApplyCards = ({
           <span>{companyName}</span>
         </h2>
         <h2 className="card-title text-m text-gray-600">{jobTitle}</h2>
-        <p className="text-[15px]">{description}</p>
+        <p className="text-[15px]">{newt}</p>
         <div className="justify-left card-actions mb-3">
           <button 
             onClick={handleJobClick}
