@@ -11,8 +11,8 @@ const ApplyCards = ({
 }) => {
   const navigate = useNavigate();
   const words = description.trim().split(/\s+/);
-  const newt = (words.length <= 10)? description:
-   words.slice(0, 9).join(' ') + '...';
+  const newt = (words.length <= 3)? description:
+   words.slice(0, 3).join(' ') + '...';
   const handleJobClick = () => {
     if (jobId) {
       // Navigate to UserJobPost component with jobId in params

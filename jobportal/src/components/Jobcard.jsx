@@ -13,10 +13,10 @@ const Jobcard = ({
 const words = description.trim().split(/\s+/);
 
   // Take first 20 words
-  const limited = words.slice(0, 20).join(" ");
+  const limited = words.slice(0, 3).join(" ");
 
   // Add ellipsis if truncated
-  const text =  words.length > 20 ? limited + "..." : limited;
+  const text =  words.length > 3 ? limited + "..." : limited;
   const handleJobClick = () => {
     if (jobId) {
       // Navigate to EmployerPost component with jobId in params
