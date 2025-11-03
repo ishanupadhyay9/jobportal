@@ -70,7 +70,7 @@ const ProfileSetter = () => {
           setExists(false);
         } else {
           console.error("Error fetching profile:", err);
-          toast.error("Error loading profile");
+       
         }
       } finally {
         setLoading(false);
