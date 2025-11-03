@@ -64,6 +64,7 @@ const Signup = () => {
         formData.confirmpassword
       );
     } catch (error) {
+       toast.error("Error in signup. Please try again.");
       console.error('Signup error:', error);
       
       // Handle specific error messages from the API
@@ -72,7 +73,7 @@ const Signup = () => {
         toast.error(error.response.data.message);
       } else {
         setError("Error in signup. Please try again.");
-        toast.error("Error in signup. Please try again.");
+       
       }
     } finally {
       dispatch(setLoading(false));
@@ -96,7 +97,7 @@ const Signup = () => {
             <div>
               <h2 className="text-xl font-semibold">Create an Applicant Account</h2>
              <Link to={"/employer-signup"}>
-             <p className="text-xs mt-1 text-blue-400 ">Are you an Employer? Register here</p></Link> 
+             <p className="text-xs mt-1 text-blue-400 ">Are you a Recruiter? Register here</p></Link> 
             </div>
 
             <div className="space-y-4">

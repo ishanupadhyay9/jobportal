@@ -105,7 +105,7 @@ const ChatPage = () => {
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
   const [fetchingProfile, setFetchingProfile] = useState(false);
-
+  
   const chatInitializedRef = useRef(false);
   const clientRef = useRef(null);
 
@@ -140,8 +140,7 @@ const ChatPage = () => {
         if (cancelled) return;
 
         console.log("getEmployer result:", empResult);
-        console.log("getUser result:", userResult);
-
+     
         const extractData = (res) => {
           if (!res) return null;
           if (res.data) {
@@ -152,7 +151,8 @@ const ChatPage = () => {
         };
 
         let selected = null;
-
+          console.log("getUser result:", userResult);
+      
         // Set isEmployer true only if fulfilled and employer data is valid
         if (empResult.status === "fulfilled") {
           const employerData = extractData(empResult.value);

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '../redux/slices/authSlice';
 import { login } from '../services/apicalls/authApi';
 import LoadingScreen from "../components/LoadingScreen";
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [role, setRole] = useState('user');
@@ -22,6 +23,7 @@ const Login = () => {
       await login(dispatch, navigate, email, role, password);
     } catch (error) {
       console.error(error);
+      toast.error("failed to LogIn, try again")
     } finally {
       dispatch(setLoading(false));
     }
@@ -56,7 +58,7 @@ const Login = () => {
                 className="radio radio-primary"
                 disabled={isLoading}
               />
-              <span className="text-gray-700">Employee</span>
+              <span className="text-gray-700">Applicant</span>
             </label>
             <label className="flex items-center space-x-2">
               <input
@@ -68,7 +70,7 @@ const Login = () => {
                 className="radio radio-secondary"
                 disabled={isLoading}
               />
-              <span className="text-gray-700">Employer</span>
+              <span className="text-gray-700">Recruiter</span>
             </label>
           </div>
 

@@ -134,7 +134,7 @@ export default function EmployerProfileForm() {
 
 
         <h2 className="text-4xl font-extrabold text-gray-800 text-center tracking-wide">
-          Create Employer Profile
+          Create Recruiter Profile
         </h2>
         <p className="text-center text-gray-500 mb-8">
           Fill in the details to create your professional profile

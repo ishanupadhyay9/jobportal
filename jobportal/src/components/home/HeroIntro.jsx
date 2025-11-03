@@ -51,7 +51,7 @@ const HeroIntro = () => {
       {/* Signup Buttons */}
         <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-8">
           <Link to={"/employer-signup"}><button className="flex items-center gap-2 bg-purple-600 hover:bg-purple-500 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg transform hover:scale-105 transition">
-            <FaUserTie /> Employer Sign Up
+            <FaUserTie /> Recruiter Sign Up
           </button></Link>
 
        <Link to={"/user-signup"}> <button className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg transform hover:scale-105 transition">
@@ -63,7 +63,7 @@ const HeroIntro = () => {
         
         <div className="flex justify-center items-center gap-6">
           <Link to={'/login'}><button className="flex items-center gap-2 text-gray-300 hover:text-white transition">
-            <FaSignInAlt /> Employer Login
+            <FaSignInAlt /> Recruiter Login
           </button></Link>
           <span className="text-gray-500">|</span>
           <Link to={'/login'}><button className="flex items-center gap-2 text-gray-300 hover:text-white transition">
