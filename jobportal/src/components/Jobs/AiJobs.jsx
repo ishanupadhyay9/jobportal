@@ -13,6 +13,8 @@ const AiJobs = () => {
       console.log(data);
       if (data.success) {
         setJobs(data.data);
+        console.log(data.data);
+        
       }
     }
     
@@ -30,7 +32,7 @@ const AiJobs = () => {
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-extrabold text-white text-center mb-16">
-          AI Job Suggestions
+          AI based Job Suggestions
         </h1>
 
         <div className="ai-jobs-grid">

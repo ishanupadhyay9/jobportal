@@ -65,7 +65,7 @@ const JobCard = ({
         onClick={handleViewDetails}
         className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center space-x-2"
       >
-        <span>View Details & Apply</span>
+        <span>Apply</span>
         <FaExternalLinkAlt className="text-sm" />
       </button>
     </div>
