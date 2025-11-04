@@ -119,14 +119,8 @@ const AiJobs = () => {
               ))}
             </div>
 
-            {/* Job Counter */}
-            <div className="text-center mt-6">
-              <div className="inline-flex items-center bg-white/10 backdrop-blur-md rounded-full px-6 py-2 border border-white/20">
-                <span className="text-white/80 text-sm font-medium">
-                  Showing {currentIndex + 1}-{Math.min(currentIndex + cardsPerView, jobs.length)} of {jobs.length} AI jobs
-                </span>
-              </div>
-            </div>
+            
+          
           </div>
         )}
 
