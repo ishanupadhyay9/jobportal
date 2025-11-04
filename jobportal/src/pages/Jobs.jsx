@@ -4,6 +4,7 @@ import JobsIntroSection from '../components/Jobs/JobsIntroSection'
 import JobListingsSection from '../components/Jobs/JobListingSection'
 import AllJobsSection from '../components/Jobs/AllJobsSection'
 import RecentJobs from '../components/Jobs/RecentJobs'
+import AiJobs from '../components/Jobs/AiJobs'
 const Jobs = () => {
 
   return (
@@ -11,6 +12,7 @@ const Jobs = () => {
       <Navbar/>
       
       <JobsIntroSection/>
+      <AiJobs/>
       <JobListingsSection/>
       <RecentJobs/>
       <AllJobsSection/>

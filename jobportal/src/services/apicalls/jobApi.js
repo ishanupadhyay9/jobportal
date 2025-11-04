@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 const {CREATE_JOB_API,
      GET_ALL_JOBS_API,
+     GET_AI_JOBS_API,
      GET_EMPLOYER_JOBS_API,
      GET_JOB_DETAILS,
      GET_USER_JOBS_API,
@@ -368,6 +369,53 @@ export async function disqualifyApplicant(userId, jobId, token) {
     return {
       success: false,
       message: error.response?.data?.message || "Error disqualifying applicant",
+      error: error.response?.data || error.message
+    };
+  }
+}
+
+
+
+
+export async function getAiJobs(userId,token) {
+  // Get current state from store
+  // Get token from auth slice
+  
+
+  
+  // Check if userId and token exist
+  if (!userId) {
+    toast.error("User ID not found");
+    return {
+      success: false,
+      message: "User ID not found in auth state"
+    };
+  }
+
+  if (!token) {
+    toast.error("Please log in to continue");
+    return {
+      success: false,
+      message: "Authentication token not found"
+    };
+  }
+  
+  try {
+    // Use template literals to append userId to the URL
+    const response = await apiConnector("GET", `${GET_AI_JOBS_API}/${userId}`, null, {
+      Authorization: `Bearer ${token}`,
+    });
+    
+    return {
+      success: true,
+      data: response.data
+    };
+  } catch (error) {
+    console.error("Error fetching AI job suggestions:", error);
+    toast.error("Error fetching job suggestions");
+    return {
+      success: false,
+      message: error.response?.data?.message || "Error fetching job suggestions",
       error: error.response?.data || error.message
     };
   }
