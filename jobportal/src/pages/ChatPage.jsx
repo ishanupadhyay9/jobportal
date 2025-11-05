@@ -88,7 +88,7 @@ const ChatPage = () => {
   const tkn = useSelector((state) => state.auth.token);
   const authUser = useSelector((state) => state.auth.userData);
   const reduxUserId = useSelector((state) => state.auth.userId);
-
+  const [finalChannelId, setFinalChannelId] = useState(null);
   // Local state
   const [isEmployer, setIsEmployer] = useState(true);
   const [chatClient, setChatClient] = useState(null);
@@ -241,7 +241,7 @@ const ChatPage = () => {
 
         // --- HERE: generate deterministic short channel id for the pair ---
         const channelId = await generateDeterministicChannelId(localUserId, targetUserId);
-
+        setFinalChannelId(channelId);
         // logging
         console.log("=== Stream Client Setup Data ===");
         console.log("authUser (from redux):", authUser);
@@ -317,57 +317,7 @@ const ChatPage = () => {
     };
   }, []);
 
-  const handleVideoCall = () => {
-    if (!channel) {
-      toast.error("No channel ready for calls.");
-      return;
-    }
-    const callUrl = `${window.location.origin}/call/${channel.id}`;
-    channel
-      .sendMessage({
-        text: `Your interview has been scheduled successfully! Please read the following instructions carefully to ensure a smooth interview experience.
-
-**Pre-Interview Preparation:**
-• Test your internet connection and ensure stable connectivity
-• Check your camera and microphone functionality 30 minutes before the interview
-• Choose a quiet, well-lit location with minimal background distractions
-• Keep your resume, portfolio, and relevant documents ready
-• Prepare answers for common behavioral and technical questions
-• Research the company and role thoroughly
-
-**Technical Requirements:**
-• Laptop/desktop with working camera and microphone
-• Updated web browser (Chrome, Firefox, Safari, or Edge)
-• Backup internet connection (mobile hotspot if needed)
-• Headphones recommended for better audio quality
-
-**During the Interview:**
-• Join the call 5-10 minutes early using the provided link
-• Dress professionally as you would for an in-person interview
-• Maintain eye contact by looking at the camera, not the screen
-• Speak clearly and pause for any potential audio delays
-• Have a pen and paper ready for notes
-
-**Interview Structure:**
-• Introduction and company overview (5-10 minutes)
-• Technical/behavioral questions (30-40 minutes)
-• Your questions about the role/company (5-10 minutes)
-• Next steps discussion (5 minutes)
-
-**Important Notes:**
-• Keep your phone on silent mode
-• Inform household members about your interview timing
-• Have the interviewer's contact details handy for technical issues
-• If you experience technical difficulties, contact us immediately
-
-Video Call Link: ${callUrl}
-
-Good luck with your interview!
-`,
-      })
-      .then(() => toast.success("Video call link sent successfully!"))
-      .catch(() => toast.error("Failed to send video call link."));
-  };
+  
 
   const listRef = useRef(null);
 
@@ -389,8 +339,9 @@ Good luck with your interview!
     <ChatWindow
       chatClient={chatClient}
       isEmployer={isEmployer}
+      channelId= {finalChannelId}
       channel={channel}
-      handleVideoCall={handleVideoCall}
+      
     />
   );
 };
