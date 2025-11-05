@@ -20,7 +20,8 @@ import { useSelector } from "react-redux";
 
 export function ChatWindow({ chatClient, channel, handleVideoCall , isEmployer}) {
   const navigate = useNavigate();
-  
+  console.log(isEmployer);
+  console.log(typeof(isEmployer));
  function handleBack (){
   console.log() 
   navigate(-1);} 
@@ -31,12 +32,12 @@ export function ChatWindow({ chatClient, channel, handleVideoCall , isEmployer})
           <div className="chat-container relative flex-1 h-full bg-gray-300">
 
             {/* NAVBAR */}
-            <header className="chat-header sticky top-0 z-50 bg-white h-[60px]">
-              <div className="max-w-[1400px] mx-auto flex items-center justify-between px-6 h-14">
-                <div className="left-controls flex items-center min-w-[150px] ">
+            <header className="chat-header border-1 sticky top-0 z-50 bg-white h-[60px]">
+              <div className="max-w-[1400px]  mx-auto flex items-center justify-between px-6 h-14">
+                <div className="left-controls  flex items-center min-w-[150px] ">
                  <button
   onClick={handleBack}
-  className="back-btn inline-flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-1 text-sm text-gray-700 hover:bg-gray-50 hover:scale-105"
+  className="back-btn inline-flex items-center gap-2 rounded-md border border-gray-200  px-3 py-1 text-sm text-gray-700 hover:text-blue-500 hover:border-blue-500 hover:scale-105"
   style={{ 
     position: 'relative', 
     zIndex: 9999,
@@ -53,7 +54,7 @@ export function ChatWindow({ chatClient, channel, handleVideoCall , isEmployer})
                 </div>
 
                 <div className="flex-1 flex items-center justify-center min-w-0 px-4">
-                  <div className="w-full max-w-[800px] text-center">
+                  <div className="w-full max-w-[800px] relative top-1 text-center">
                     <ChannelHeader />
                   </div>
                 </div>

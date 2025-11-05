@@ -51,17 +51,7 @@ function djb2Hex(s) {
   return (h >>> 0).toString(16);
 }
 
-/**
- * Generate a deterministic channel id for two participants.
- * - sorts the ids to make order-independent
- * - uses SHA-256 via Web Crypto and truncates to keep it short (+ "c-" prefix)
- * - falls back to djb2 hex if crypto.subtle not available
- *
- * Guarantees:
- * - deterministic for same pair of ids
- * - uses only [0-9a-f] characters (safe for Stream)
- * - length << 64
- */
+
 async function generateDeterministicChannelId(idA, idB) {
   const a = String(idA ?? "");
   const b = String(idB ?? "");
@@ -100,7 +90,7 @@ const ChatPage = () => {
   const reduxUserId = useSelector((state) => state.auth.userId);
 
   // Local state
-  const [isEmployer, setIsEmployer] = useState(false);
+  const [isEmployer, setIsEmployer] = useState(true);
   const [chatClient, setChatClient] = useState(null);
   const [channel, setChannel] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -112,7 +102,7 @@ const ChatPage = () => {
   // 1) fetch profile using token if missing
   useEffect(() => {
     let cancelled = false;
-    const fetchProfileUsingToken = async () => {
+    const  fetchProfileUsingToken = async  () => {
       try {
         if (!tkn) {
           console.log("No token available; skipping profile fetch.");
