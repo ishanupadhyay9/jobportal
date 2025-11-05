@@ -22,6 +22,7 @@ export function ChatWindow({ chatClient, channel, handleVideoCall , isEmployer})
   const navigate = useNavigate();
   console.log(isEmployer);
   console.log(typeof(isEmployer));
+  const employer = true;
  function handleBack (){
   console.log() 
   navigate(-1);} 
@@ -61,7 +62,7 @@ export function ChatWindow({ chatClient, channel, handleVideoCall , isEmployer})
 
                 <div className="right-controls flex items-center justify-end min-w-[150px]">
                   <div className="call-button-wrapper">
-                   {(isEmployer)?<CallButton handleVideoCall={handleVideoCall} />:<div className=" "></div>} 
+                   {(true)?<CallButton handleVideoCall={handleVideoCall} />:<div className=" "></div>} 
                   </div>
                 </div>
               </div>
